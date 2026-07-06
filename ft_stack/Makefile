@@ -1,5 +1,5 @@
 NAME = ft_stack.a
-INCS = -I./includes
+INCS = -I./include
 HEADER = ft_stack.h
 SRCS = stack_basic.c stack_rotate.c stack_rrotate.c \
 		stack_getter.c stack_swap.c

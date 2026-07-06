@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 20:47:17 by slim              #+#    #+#             */
-/*   Updated: 2026/07/04 10:48:47 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/06 11:33:12 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,7 @@ int	rotate_stack(t_stack *s)
 
 int	rotate_stacks(t_stack *s1, t_stack *s2)
 {
-	return (rotate_stack(s1) | rotate_stack(s2));
+	if (get_stack_size(s1) <= 1 || get_stack_size(s2) <= 1)
+		return (0);
+	return (rotate_stack(s1), rotate_stack(s2));
 }
