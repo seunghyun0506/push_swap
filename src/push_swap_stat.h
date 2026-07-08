@@ -1,19 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_stack_internal.h                                :+:      :+:    :+:   */
+/*   push_swap_stat.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/04 11:16:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/04 11:20:39 by slim             ###   ########.fr       */
+/*   Created: 2026/07/08 02:18:12 by slim              #+#    #+#             */
+/*   Updated: 2026/07/08 02:18:12 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_STACK_INTERNAL_H
-# define FT_STACK_INTERNAL_H
-# include "ft_stack.h"
+#ifndef PUSH_SWAP_STAT_H
+# define PUSH_SWAP_STAT_H
 
-int	calculate_next_index(t_stack *s, int num);
-int	calculate_prev_index(t_stack *s, int num);
+#include "ft_stack.h"
+
+typedef struct s_push_swap_stat
+{
+	int		argc;
+	int		i;
+	int		option;
+	int		bench;
+	char	**argv;
+	t_stack	*stack_a;
+	t_stack	*stack_b;
+} t_push_swap_stat;
+
+void	init_push_swap_stat(t_push_swap_stat *stat, int argc, char **argv);
+
 #endif
