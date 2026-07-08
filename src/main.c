@@ -10,12 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_stack.h"
 #include "push_swap_stat.h"
 #include <unistd.h>
+#include <stdlib.h>
 #include "libft.h"
 
 static int	parse_flag(t_push_swap_stat *stat);
 static int	parse_stack(t_push_swap_stat *stat);
+static int	parse_integers(t_list **lst, const char *str);
 static void	sort(t_push_swap_stat *stat);
 
 int	main(int argc, char **argv)
@@ -53,6 +56,7 @@ static int	parse_flag(t_push_swap_stat *stat)
 			stat->bench = 1;
 		else
 			break ;
+		stat->i++;
 	}
 	if (opt_cnt > 1 || bench_cnt > 1)
 		return (0);
@@ -61,5 +65,65 @@ static int	parse_flag(t_push_swap_stat *stat)
 
 static void	sort(t_push_swap_stat *stat)
 {
-	
+}
+
+static int	parse_stack(t_push_swap_stat *stat)
+{
+	int			cnt;
+	int			tmp;
+	t_list		*list;
+	t_list		*list_tmp;
+
+	cnt = 0;
+	list = 0;
+	while (stat->i < stat->argc)
+	{
+		tmp = parse_integers(&list, stat->argv[stat->i]);
+		if (tmp < 0)
+			return (0);
+		cnt += tmp;
+		stat->i++;
+	}
+	stat->stack_a = init_stack(cnt);
+	stat->stack_b = init_stack(cnt);
+	if (!stat->stack_a || !stat->stack_b)
+		return (ft_lstclear(&list, free),
+			free(stat->stack_a), free(stat->stack_b), 0);
+	while (cnt--)
+	{
+		push_stack_data(stat->stack_a, *((int *)list->content));
+		list_tmp = list;
+		list = list->next;
+		ft_lstdelone(list_tmp, free);
+	}
+	return (1);
+}
+
+static int	parse_integers(t_list **lst, const char *str)
+{
+	int			num;
+	int			cnt;
+	const char	*pos;
+	int			*tmp_int;
+	t_list		*tmp;
+
+	cnt = 0;
+	while (*str != '\0')
+	{
+		num = ft_strtoi(str, &pos);
+		if (str == pos
+			|| (*pos != '\0' && !ft_isspace(*pos)) || !ft_isdigit(*(pos - 1)))
+			return (ft_lstclear(lst, free), -1);
+		tmp_int = (int *)malloc(sizeof(int));
+		if (!tmp_int)
+			return (ft_lstclear(lst, free), -1);
+		*tmp_int = num;
+		tmp = ft_lstnew(tmp_int);
+		if (!tmp)
+			return (free(tmp_int), ft_lstclear(lst, free), -1);
+		ft_lstadd_front(lst, tmp);
+		cnt++;
+		str = pos;
+	}
+	return (cnt);
 }
