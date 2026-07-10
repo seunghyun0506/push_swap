@@ -5,7 +5,7 @@ SRCS = stack_basic.c stack_rotate.c stack_rrotate.c \
 		stack_getter.c stack_swap.c
 OBJS = $(SRCS:.c=.o)
 
-$(NAME) : $(OBJS)
+$(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
 
 %.o : %.c

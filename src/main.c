@@ -14,8 +14,6 @@
 #include "push_swap_stat.h"
 #include "push_swap.h"
 #include <unistd.h>
-#include <stdlib.h>
-#include "libft.h"
 
 int	main(int argc, char **argv)
 {
@@ -28,5 +26,11 @@ int	main(int argc, char **argv)
 		return (write(1, "Error\n", 6), 1);
 	if (!parse_stack(&stat))
 		return (write(1, "Error\n", 6), 1);
+	if (!check_duplicate(&stat))
+	{
+		destroy_stack(stat.stack_a);
+		destroy_stack(stat.stack_b);
+		return (write(1, "Error\n", 6), 1);
+	}
 	sort(&stat);
 }

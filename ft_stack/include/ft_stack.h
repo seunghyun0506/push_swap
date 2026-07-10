@@ -36,6 +36,8 @@ int		rrotate_stacks(t_stack *s1, t_stack *s2);
 int		swap_stack(t_stack *s);
 int		swap_stacks(t_stack *s1, t_stack *s2);
 
+int	push_stack(t_stack *from, t_stack *to);
+
 int		is_stack_full(t_stack *s);
 int		get_stack_top(t_stack *s, int *res);
 int		get_stack_size(t_stack *s);

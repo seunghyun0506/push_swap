@@ -88,9 +88,10 @@ static int	parse_integers(t_list **lst, const char *str)
 	cnt = 0;
 	while (*str != '\0')
 	{
+		while (ft_isspace(*str))
+			str++;
 		num = ft_strtoi(str, &pos);
-		if (str == pos
-			|| (*pos != '\0' && !ft_isspace(*pos)) || !ft_isdigit(*(pos - 1)))
+		if (str == pos || (*pos != '\0' && !ft_isspace(*pos)))
 			return (ft_lstclear(lst, free), -1);
 		tmp_int = (int *)malloc(sizeof(int));
 		if (!tmp_int)
