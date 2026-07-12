@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/10 06:32:51 by slim              #+#    #+#             */
-/*   Updated: 2026/07/10 13:04:26 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/12 14:45:18 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,12 @@ void	rewind_stack(t_stack *s1, t_stack *s2, int s1_size, int s2_size)
 			rrotate_stack(s1);
 	else
 	{
-		while (s1_size-- && s2_size--)
+		while (s1_size && s2_size)
+		{
 			rrotate_stacks(s1, s2);
+			s1_size--;
+			s2_size--;
+		}
 		while (s1_size--)
 			rrotate_stack(s1);
 		while (s2_size--)

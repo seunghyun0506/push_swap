@@ -91,7 +91,7 @@ static int	parse_integers(t_list **lst, const char *str)
 		while (ft_isspace(*str))
 			str++;
 		num = ft_strtoi(str, &pos);
-		if (str == pos || (*pos != '\0' && !ft_isspace(*pos))) //1 "             " 2
+		if (str == pos || (*pos != '\0' && !ft_isspace(*pos)))
 			return (ft_lstclear(lst, free), -1);
 		tmp_int = (int *)malloc(sizeof(int));
 		if (!tmp_int)
