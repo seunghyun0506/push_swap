@@ -6,11 +6,12 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/10 02:22:38 by slim              #+#    #+#             */
-/*   Updated: 2026/07/10 12:17:16 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/13 19:46:29 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_stack.h"
+#include "push_swap_sort.h"
 #include "push_swap_stat.h"
 
 int			complex_sort(t_push_swap_stat *stat);
@@ -31,6 +32,8 @@ static int	sort_asc(t_stack *s1, t_stack *s2, int size)
 {
 	int	arr[3];
 
+	if (size <= 3)
+		return (small_sort_asc(s1, s2, size));
 	partition_asc(s1, s2, size, arr);
 	rewind_stack(s1, s2, arr[2], arr[1]);
 	sort_desc(s2, s1, arr[1]);
@@ -47,6 +50,8 @@ static int	sort_desc(t_stack *s1, t_stack *s2, int size)
 {
 	int	arr[3];
 
+	if (size <= 3)
+		return (small_sort_desc(s1, s2, size));
 	partition_desc(s1, s2, size, arr);
 	rewind_stack(s1, s2, arr[2], arr[1]);
 	sort_asc(s2, s1, arr[1]);

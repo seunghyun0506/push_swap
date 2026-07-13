@@ -1,10 +1,11 @@
 NAME		= libft.a
 
-CFLAGS	  = -Wall -Wextra -Werror -I $(INCS_DIR)
+CFLAGS	  = -Wall -Wextra -Werror -MMD -MP -I $(INCS_DIR)
 AR		  = ar crs
 RM		  = rm -f
 
 SRCS_DIR	= ./src
+OUT_DIR	= ./out
 INCS_DIR	= ./include
 
 SRC_FILES   = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
@@ -17,17 +18,18 @@ SRC_FILES   = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
 			  ft_strchr.c ft_strdup.c ft_striteri.c ft_strjoin.c \
 			  ft_strlcat.c ft_strlcpy.c ft_strlen.c ft_strmapi.c \
 			  ft_strncmp.c ft_strnstr.c ft_strrchr.c ft_strtrim.c \
-			  ft_substr.c ft_tolower.c ft_toupper.c
+			  ft_substr.c ft_tolower.c ft_toupper.c ft_strcmp.c ft_strtoi.c ft_isspace.c
 
 SRCS		= $(addprefix $(SRCS_DIR)/, $(SRC_FILES))
-OBJS		= $(SRCS:.c=.o)
-
+OBJS		= $(addprefix $(OUT_DIR)/, $(SRC_FILES:.c=.o))
+DEPS		= $(OBJ:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(AR) $(NAME) $(OBJS)
 
-%.o: %.c
+$(OUT_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@)
 	cc $(CFLAGS) -c $< -o $@
 
 clean:
@@ -38,4 +40,5 @@ fclean: clean
 
 re: fclean all
 
+-include $(DEPS)
 .PHONY: all clean fclean re

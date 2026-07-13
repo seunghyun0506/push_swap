@@ -1,3 +1,7 @@
 compile_commands.json
 compile_flags.txt
 .cache/**
+push_swap
+./ft_stack/out/**
+./libft/out/**
+./out/**
