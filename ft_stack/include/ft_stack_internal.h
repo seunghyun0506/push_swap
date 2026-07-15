@@ -14,6 +14,6 @@
 # define FT_STACK_INTERNAL_H
 # include "ft_stack.h"
 
-int	calculate_next_index(t_stack *s, int num);
-int	calculate_prev_index(t_stack *s, int num);
+int	next_idx(t_stack *s, int num);
+int	prev_idx(t_stack *s, int num);
 #endif

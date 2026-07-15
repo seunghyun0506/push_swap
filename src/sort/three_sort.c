@@ -24,8 +24,8 @@ void	three_sort_asc(t_stack *s1, t_stack *s2)
 	if (get_stack_size(s1) < 3)
 		return ;
 	arr[0] = s1->top_index;
-	arr[1] = calculate_prev_index(s1, arr[0]);
-	arr[2] = calculate_prev_index(s1, arr[1]);
+	arr[1] = prev_idx(s1, arr[0]);
+	arr[2] = prev_idx(s1, arr[1]);
 	arr[0] = s1->datas[arr[0]];
 	arr[1] = s1->datas[arr[1]];
 	arr[2] = s1->datas[arr[2]];
@@ -53,8 +53,8 @@ void	three_sort_desc(t_stack *s1, t_stack *s2)
 	if (get_stack_size(s1) < 3)
 		return ;
 	arr[0] = s1->top_index;
-	arr[1] = calculate_prev_index(s1, arr[0]);
-	arr[2] = calculate_prev_index(s1, arr[1]);
+	arr[1] = prev_idx(s1, arr[0]);
+	arr[2] = prev_idx(s1, arr[1]);
 	arr[0] = s1->datas[arr[0]];
 	arr[1] = s1->datas[arr[1]];
 	arr[2] = s1->datas[arr[2]];

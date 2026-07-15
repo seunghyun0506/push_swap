@@ -20,8 +20,8 @@ int	rrotate_stack(t_stack *s)
 {
 	if (get_stack_size(s) <= 1)
 		return (0);
-	s->top_index = calculate_prev_index(s, s->top_index);
-	s->bottom_index = calculate_prev_index(s, s->bottom_index);
+	s->top_index = prev_idx(s, s->top_index);
+	s->bottom_index = prev_idx(s, s->bottom_index);
 	s->datas[s->top_index] = s->datas[s->bottom_index];
 	return (1);
 }

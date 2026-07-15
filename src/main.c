@@ -20,7 +20,7 @@ int	main(int argc, char **argv)
 	t_push_swap_stat	stat;
 
 	if (argc <= 1)
-		return (write(1, "Error\n", 6), 1);
+		return (0);
 	init_push_swap_stat(&stat, argc, argv);
 	if (!parse_flag(&stat))
 		return (write(1, "Error\n", 6), 1);

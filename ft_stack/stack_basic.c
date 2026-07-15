@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_stack.h"
+#include "ft_stack_internal.h"
 #include <stdlib.h>
 
 t_stack	*init_stack(int capacity);
@@ -41,7 +42,7 @@ int	push_stack_data(t_stack *s, int data)
 {
 	if (is_stack_full(s))
 		return (~data);
-	s->top_index = (s->top_index + 1) % (s->capacity + 1);
+	s->top_index = next_idx(s, s->top_index);
 	s->datas[s->top_index] = data;
 	return (data);
 }
@@ -51,7 +52,7 @@ int	pop_stack_data(t_stack *s, int *res)
 	if (get_stack_size(s) <= 0)
 		return (0);
 	*res = s->datas[s->top_index];
-	s->top_index = (s->top_index - 1 + (s->capacity + 1)) % (s->capacity + 1);
+	s->top_index = prev_idx(s, s->top_index);
 	return (1);
 }
 

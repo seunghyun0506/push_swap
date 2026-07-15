@@ -14,8 +14,8 @@
 
 int		get_stack_top(t_stack *s, int *res);
 int		get_stack_size(t_stack *s);
-int		calculate_next_index(t_stack *s, int num);
-int		calculate_prev_index(t_stack *s, int num);
+int		next_idx(t_stack *s, int num);
+int		prev_idx(t_stack *s, int num);
 int		is_stack_full(t_stack *s);
 
 int		get_stack_top(t_stack *s, int *res)
@@ -36,12 +36,12 @@ int		get_stack_size(t_stack *s)
 	return ((s->top_index - s->bottom_index + s->capacity + 1) % (s->capacity + 1));
 }
 
-int		calculate_next_index(t_stack *s, int num)
+int		next_idx(t_stack *s, int num)
 {
 	return (num + 1) % (s->capacity + 1);
 }
 
-int		calculate_prev_index(t_stack *s, int num)
+int		prev_idx(t_stack *s, int num)
 {
 	return (num - 1 + (s->capacity + 1)) % (s->capacity + 1);
 }

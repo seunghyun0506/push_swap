@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_stack.h"
+#include "ft_stack_internal.h"
 
 int	rotate_stack(t_stack *s);
 int	rotate_stacks(t_stack *s1, t_stack *s2);
@@ -20,8 +21,8 @@ int	rotate_stack(t_stack *s)
 	if (get_stack_size(s) <= 1)
 		return (0);
 	s->datas[s->bottom_index] = s->datas[s->top_index];
-	s->top_index = (s->top_index + 1) % (s->capacity + 1);
-	s->bottom_index = (s->bottom_index + 1) % (s->capacity + 1);
+	s->top_index = prev_idx(s, s->top_index);
+	s->bottom_index = prev_idx(s, s->bottom_index);
 	return (1);
 }
 

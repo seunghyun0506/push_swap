@@ -21,7 +21,7 @@ int	swap_stack(t_stack *s)
 {
 	if (get_stack_size(s) <= 1)
 		return (0);
-	swap(&s->datas[s->top_index], &s->datas[calculate_next_index(s, s->top_index)]);
+	swap(&s->datas[s->top_index], &s->datas[prev_idx(s, s->top_index)]);
 	return (1);
 }
 
