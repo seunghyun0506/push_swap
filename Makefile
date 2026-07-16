@@ -2,7 +2,7 @@ NAME        = push_swap
 
 CFLAGS      = -Wall -Werror -Wextra
 DEPFLAGS    = -MMD -MP
-INCFLAGS    = -I./include -I./ft_stack/include -I./libft/include
+INCFLAGS    = -I./include -I./ft_stack/include -I./libft/include -I./ft_vector/include
 
 SRC_DIR     = ./src
 OUT_DIR     = ./out
@@ -19,6 +19,8 @@ DEPS        = $(OBJ:.o=.d)
 LIBFT       = ./libft
 LIBFT_A     = ./libft/libft.a
 FT_STACK    = ./ft_stack
+FT_STACK_A  = ./ft_stack/ft_stack.a
+FT_VECTOR   = ./ft_stack
 FT_STACK_A  = ./ft_stack/ft_stack.a
 
 RM          = rm -rf

@@ -6,14 +6,13 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/12 15:30:41 by slim              #+#    #+#             */
-/*   Updated: 2026/07/13 19:45:14 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/16 14:54:58 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_stack.h"
 #include "ft_stack_internal.h"
 #include "push_swap_sort.h"
-#include <bits/types/siginfo_t.h>
 
 int	small_sort_asc(t_stack *s1, t_stack *s2, int size);
 int	small_sort_desc(t_stack *s1, t_stack *s2, int size);

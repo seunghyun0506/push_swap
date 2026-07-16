@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/10 02:22:38 by slim              #+#    #+#             */
-/*   Updated: 2026/07/15 17:45:51 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/16 13:53:20 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,14 @@ static int	sort_asc(t_stack *s1, t_stack *s2, int size)
 	if (size <= 3)
 		return (small_sort_asc(s1, s2, size));
 	partition_asc(s1, s2, size, arr);
+	
+	rewind_stack(s1, s2, arr[2], arr[1]);
 
-	sort_desc(s2, s1, arr[1]);
 	sort_asc(s1, s2, arr[2]);
+	sort_desc(s2, s1, arr[1]);
 	while (arr[1]--)
 		push_stack(s2, s1);
+		
 	sort_desc(s2, s1, arr[0]);
 	while (arr[0]--)
 		push_stack(s2, s1);
@@ -53,11 +56,14 @@ static int	sort_desc(t_stack *s1, t_stack *s2, int size)
 	if (size <= 3)
 		return (small_sort_desc(s1, s2, size));
 	partition_desc(s1, s2, size, arr);
+	
 	rewind_stack(s1, s2, arr[2], arr[1]);
-	sort_asc(s2, s1, arr[1]);
+
 	sort_desc(s1, s2, arr[2]);
+	sort_asc(s2, s1, arr[1]);
 	while (arr[1]--)
 		push_stack(s2, s1);
+		
 	sort_asc(s2, s1, arr[0]);
 	while (arr[0]--)
 		push_stack(s2, s1);

@@ -36,11 +36,11 @@ void	three_sort_asc(t_stack *s1, t_stack *s2)
 	else if (arr[1] < arr[0] && arr[0] < arr[2])
 		swap_stack(s1);
 	else if (arr[1] < arr[2] && arr[2] < arr[0])
-		(push_stack(s1, s2), swap_stack(s1)
-			, push_stack(s2, s1), swap_stack(s1));
-	else if (arr[1] < arr[2] && arr[2] < arr[0])
 		(swap_stack(s1), push_stack(s1, s2)
 			, swap_stack(s1), push_stack(s2, s1));
+	else if (arr[2] < arr[0] && arr[0] < arr[1])
+		(push_stack(s1, s2), swap_stack(s1)
+			, push_stack(s2, s1), swap_stack(s1));
 	else if (arr[2] < arr[1] && arr[1] < arr[0])
 		(swap_stack(s1), push_stack(s1, s2), swap_stack(s1)
 			, push_stack(s2, s1), swap_stack(s1));
