@@ -9,8 +9,11 @@ OUT_DIR     = ./out
 INC_DIR     = ./include
 
 SRC_FILES   = main.c push_swap.c push_swap_stat.c check_duplicate.c \
-              sort/complex_sort_small.c sort/complex_sort_util.c \
-              sort/complex_sort.c sort/three_sort.c
+              compute_disorder.c merge_sort.c \
+              sort/complex/complex_sort_small.c sort/complex/complex_sort_util.c \
+              sort/complex/complex_sort.c sort/three_sort.c \
+              sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
+              sort/medium/medium_sort_cost.c sort/medium/medium_sort_return.c
 
 SRC         = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ         = $(addprefix $(OUT_DIR)/, $(SRC_FILES:.c=.o))

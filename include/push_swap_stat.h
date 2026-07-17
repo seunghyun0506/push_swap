@@ -24,6 +24,7 @@ typedef struct s_push_swap_stat
 	char	**argv;
 	t_stack	*stack_a;
 	t_stack	*stack_b;
+	int		*sorted;
 } t_push_swap_stat;
 
 void	init_push_swap_stat(t_push_swap_stat *stat, int argc, char **argv);

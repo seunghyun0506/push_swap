@@ -23,4 +23,5 @@ void	init_push_swap_stat(t_push_swap_stat *stat, int argc, char **argv)
 	stat->argv = argv;
 	stat->stack_a = 0;
 	stat->stack_b = 0;
+	stat->sorted = 0;
 }

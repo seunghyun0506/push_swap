@@ -21,7 +21,7 @@ typedef struct s_vector
 } t_vector;
 
 t_vector	*vecnew(int capacity);
-void		vecadd_back(t_vector *v);
+void		vecadd_back(t_vector *v, int val);
 void		vecremove(t_vector *v, int idx);
 void		vecdel(t_vector *v);
 #endif

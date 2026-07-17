@@ -18,7 +18,7 @@ SRC_FILES   = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
 			  ft_strchr.c ft_strdup.c ft_striteri.c ft_strjoin.c \
 			  ft_strlcat.c ft_strlcpy.c ft_strlen.c ft_strmapi.c \
 			  ft_strncmp.c ft_strnstr.c ft_strrchr.c ft_strtrim.c \
-			  ft_substr.c ft_tolower.c ft_toupper.c ft_strcmp.c ft_strtoi.c ft_isspace.c
+			  ft_substr.c ft_tolower.c ft_toupper.c ft_strcmp.c ft_strtoi.c ft_isspace.c ft_sqrt.c
 
 SRCS		= $(addprefix $(SRCS_DIR)/, $(SRC_FILES))
 OBJS		= $(addprefix $(OUT_DIR)/, $(SRC_FILES:.c=.o))

@@ -20,19 +20,15 @@ int	check_duplicate(t_push_swap_stat *stat)
 {
 	int	size;
 	int	i;
-	int	j;
 
 	size = get_stack_size(stat->stack_a);
-	i = 1;
-	while (i <= size)
+	if (size <= 1)
+		return (1);
+	i = 0;
+	while (i < size - 1)
 	{
-		j = i + 1;
-		while (j <= size)
-		{
-			if (stat->stack_a->datas[i] == stat->stack_a->datas[j])
-				return (0);
-			j++;
-		}
+		if (stat->sorted[i] == stat->sorted[i + 1])
+			return (0);
 		i++;
 	}
 	return (1);

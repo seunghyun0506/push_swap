@@ -12,6 +12,9 @@
 
 #include "push_swap.h"
 #include "libft.h"
+#include "merge_sort.h"
+#include "push_swap_sort.h"
+#include <complex.h>
 #include <stdlib.h>
 
 int			parse_flag(t_push_swap_stat *stat);
@@ -50,7 +53,10 @@ int	parse_flag(t_push_swap_stat *stat)
 
 void	sort(t_push_swap_stat *stat)
 {
-	(void) stat;
+	if (stat->option == 3)
+	{
+		complex_sort(stat);
+	}
 }
 
 int	parse_stack(t_push_swap_stat *stat)
@@ -71,10 +77,12 @@ int	parse_stack(t_push_swap_stat *stat)
 	}
 	stat->stack_a = init_stack(cnt);
 	stat->stack_b = init_stack(cnt);
-	if (!stat->stack_a || !stat->stack_b)
-		return (ft_lstclear(&list, free),
+	stat->sorted = (int *)malloc(sizeof(int) * cnt);
+	if (!stat->stack_a || !stat->stack_b || !stat->sorted)
+		return (ft_lstclear(&list, free), free(stat->sorted),
 			free(stat->stack_a), free(stat->stack_b), 0);
 	list_to_stack(stat, &list, cnt);
+	merge_sort(stat->sorted, cnt);
 	return (1);
 }
 
@@ -111,10 +119,13 @@ static int	parse_integers(t_list **lst, const char *str)
 static void	list_to_stack(t_push_swap_stat *stat, t_list **lst, int node_cnt)
 {
 	t_list	*list_tmp;
+	int		i;
 
+	i = node_cnt - 1;
 	while (node_cnt--)
 	{
 		push_stack_data(stat->stack_a, *((int *)(*lst)->content));
+		stat->sorted[i--] = *((int *)(*lst)->content);
 		list_tmp = *lst;
 		*lst = (*lst)->next;
 		ft_lstdelone(list_tmp, free);

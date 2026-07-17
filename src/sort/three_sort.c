@@ -19,58 +19,46 @@ void	three_sort_desc(t_stack *s1, t_stack *s2);
 
 void	three_sort_asc(t_stack *s1, t_stack *s2)
 {
-	int	arr[3];
+	int	top;
+	int	mid;
+	int	bot;
 
 	if (get_stack_size(s1) < 3)
 		return ;
-	arr[0] = s1->top_index;
-	arr[1] = prev_idx(s1, arr[0]);
-	arr[2] = prev_idx(s1, arr[1]);
-	arr[0] = s1->datas[arr[0]];
-	arr[1] = s1->datas[arr[1]];
-	arr[2] = s1->datas[arr[2]];
-	if (arr[0] < arr[1] && arr[1] < arr[2])
+	top = s1->datas[s1->top_index];
+	mid = s1->datas[prev_idx(s1, s1->top_index)];
+	bot = s1->datas[prev_idx(s1, prev_idx(s1, s1->top_index))];
+	if (top < mid && mid < bot)
 		return ;
-	else if (arr[0] < arr[2] && arr[2] < arr[1])
-		(rotate_stack(s1), swap_stack(s1), rrotate_stack(s1));
-	else if (arr[1] < arr[0] && arr[0] < arr[2])
+	else if (top < bot && bot < mid)
+		(push_stack(s1, s2), swap_stack(s1), push_stack(s2, s1));
+	else if (mid < top && top < bot)
 		swap_stack(s1);
-	else if (arr[1] < arr[2] && arr[2] < arr[0])
-		(swap_stack(s1), push_stack(s1, s2)
-			, swap_stack(s1), push_stack(s2, s1));
-	else if (arr[2] < arr[0] && arr[0] < arr[1])
+	else if (bot < top && top < mid)
 		(push_stack(s1, s2), swap_stack(s1)
 			, push_stack(s2, s1), swap_stack(s1));
-	else if (arr[2] < arr[1] && arr[1] < arr[0])
+	else if (mid < bot && bot < top)
+		(swap_stack(s1), push_stack(s1, s2)
+			, swap_stack(s1), push_stack(s2, s1));
+	else if (bot < mid && mid < top)
 		(swap_stack(s1), push_stack(s1, s2), swap_stack(s1)
 			, push_stack(s2, s1), swap_stack(s1));
 }
 
 void	three_sort_desc(t_stack *s1, t_stack *s2)
 {
-	int	arr[3];
+	int	i;
 
-	if (get_stack_size(s1) < 3)
+	if (get_stack_size(s2) < 3)
 		return ;
-	arr[0] = s1->top_index;
-	arr[1] = prev_idx(s1, arr[0]);
-	arr[2] = prev_idx(s1, arr[1]);
-	arr[0] = s1->datas[arr[0]];
-	arr[1] = s1->datas[arr[1]];
-	arr[2] = s1->datas[arr[2]];
-	if (arr[0] > arr[1] && arr[1] > arr[2])
-		return ;
-	else if (arr[0] > arr[2] && arr[2] > arr[1])
-		(rotate_stack(s1), swap_stack(s1), rrotate_stack(s1));
-	else if (arr[1] > arr[0] && arr[0] > arr[2])
-		swap_stack(s1);
-	else if (arr[2] > arr[0] && arr[0] > arr[1])
-		(push_stack(s1, s2), swap_stack(s1)
-			, push_stack(s2, s1), swap_stack(s1));
-	else if (arr[1] > arr[2] && arr[2] > arr[0])
-		(swap_stack(s1), push_stack(s1, s2)
-			, swap_stack(s1), push_stack(s2, s1));
-	else if (arr[2] > arr[1] && arr[1] > arr[0])
-		(swap_stack(s1), push_stack(s1, s2), swap_stack(s1)
-			, push_stack(s2, s1), swap_stack(s1));
+	i = 0;
+	while (i < 3)
+	{
+		if (get_stack_size(s2) >= 2 && s2->datas[s2->top_index]
+				< s2->datas[prev_idx(s2, s2->top_index)])
+			swap_stack(s2);
+		push_stack(s2, s1);
+		i++;
+	}
+	three_sort_asc(s1, s2);
 }
