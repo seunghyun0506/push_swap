@@ -12,12 +12,26 @@
 
 #include <stdlib.h>
 
-static void	merge(int *arr, int *tmp, int left, int mid, int right)
+static void	copy_array(int *arr, int *tmp, int left, int right)
+{
+	int	i;
+
+	i = left;
+	while (i <= right)
+	{
+		arr[i] = tmp[i];
+		i++;
+	}
+}
+
+static void	merge(int *arr, int *tmp, int left, int right)
 {
 	int	i;
 	int	j;
 	int	k;
+	int	mid;
 
+	mid = left + (right - left) / 2;
 	i = left;
 	j = mid + 1;
 	k = left;
@@ -32,12 +46,7 @@ static void	merge(int *arr, int *tmp, int left, int mid, int right)
 		tmp[k++] = arr[i++];
 	while (j <= right)
 		tmp[k++] = arr[j++];
-	i = left;
-	while (i <= right)
-	{
-		arr[i] = tmp[i];
-		i++;
-	}
+	copy_array(arr, tmp, left, right);
 }
 
 static void	merge_sort_helper(int *arr, int *tmp, int left, int right)
@@ -49,7 +58,7 @@ static void	merge_sort_helper(int *arr, int *tmp, int left, int right)
 		mid = left + (right - left) / 2;
 		merge_sort_helper(arr, tmp, left, mid);
 		merge_sort_helper(arr, tmp, mid + 1, right);
-		merge(arr, tmp, left, mid, right);
+		merge(arr, tmp, left, right);
 	}
 }
 

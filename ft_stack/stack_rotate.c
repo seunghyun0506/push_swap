@@ -13,9 +13,6 @@
 #include "ft_stack.h"
 #include "ft_stack_internal.h"
 
-int	rotate_stack(t_stack *s);
-int	rotate_stacks(t_stack *s1, t_stack *s2);
-
 int	rotate_stack(t_stack *s)
 {
 	if (get_stack_size(s) <= 1)
@@ -30,5 +27,7 @@ int	rotate_stacks(t_stack *s1, t_stack *s2)
 {
 	if (get_stack_size(s1) <= 1 || get_stack_size(s2) <= 1)
 		return (0);
-	return (rotate_stack(s1), rotate_stack(s2));
+	rotate_stack(s1);
+	rotate_stack(s2);
+	return (1);
 }

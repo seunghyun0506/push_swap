@@ -5,131 +5,125 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/18 00:08:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/18 00:08:00 by slim             ###   ########.fr       */
+/*   Created: 2026/07/17 23:59:00 by slim              #+#    #+#             */
+/*   Updated: 2026/07/17 23:59:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap_sort.h"
 #include "ft_stack_internal.h"
 
-static int	get_rank(int *sorted, int n, int val)
+static int	is_target_chunk(t_push_swap_stat *stat, int cur_idx,
+				int chunk_size, int target_chunk)
 {
-	int	left = 0, right = n - 1, mid;
-	while (left <= right)
-	{
-		mid = left + (right - left) / 2;
-		if (sorted[mid] == val) return (mid);
-		if (sorted[mid] < val) left = mid + 1;
-		else right = mid - 1;
-	}
-	return (-1);
+	int	val;
+	int	rank;
+
+	val = stat->stack_b->datas[cur_idx];
+	rank = get_rank(stat->sorted, stat->stack_a->capacity, val);
+	return (rank / chunk_size == target_chunk);
 }
 
-static int	get_chunk_idx(int rank, int chunk_size, int total_chunks)
+static void	find_best_move(t_push_swap_stat *stat, int chunk_size,
+				int target_chunk, t_cost *best_cost)
 {
-	int	idx = rank / chunk_size;
-	if (idx >= total_chunks) idx = total_chunks - 1;
-	return (idx);
-}
+	int		cur_idx;
+	int		i;
+	int		size;
+	t_cost	cost;
 
-void	execute_move(t_push_swap_stat *stat, t_cost *cost)
-{
-	int	shared, i;
-
-	if (cost->type == 0)
+	size = get_stack_size(stat->stack_b);
+	cur_idx = stat->stack_b->top_index;
+	best_cost->cost_a = 10000000;
+	best_cost->cost_b = 10000000;
+	best_cost->type = 0;
+	i = -1;
+	while (++i < size)
 	{
-		shared = cost->cost_a < cost->cost_b ? cost->cost_a : cost->cost_b;
-		for (i = 0; i < shared; i++)
-			(rotate_stack(stat->stack_a), rotate_stack(stat->stack_b));
-		for (i = 0; i < cost->cost_a - shared; i++) rotate_stack(stat->stack_a);
-		for (i = 0; i < cost->cost_b - shared; i++) rotate_stack(stat->stack_b);
-	}
-	else if (cost->type == 1)
-	{
-		shared = cost->cost_a < cost->cost_b ? cost->cost_a : cost->cost_b;
-		for (i = 0; i < shared; i++)
-			(rrotate_stack(stat->stack_a), rrotate_stack(stat->stack_b));
-		for (i = 0; i < cost->cost_a - shared; i++) rrotate_stack(stat->stack_a);
-		for (i = 0; i < cost->cost_b - shared; i++) rrotate_stack(stat->stack_b);
-	}
-	else if (cost->type == 2)
-	{
-		for (i = 0; i < cost->cost_a; i++) rotate_stack(stat->stack_a);
-		for (i = 0; i < cost->cost_b; i++) rrotate_stack(stat->stack_b);
-	}
-	else if (cost->type == 3)
-	{
-		for (i = 0; i < cost->cost_a; i++) rrotate_stack(stat->stack_a);
-		for (i = 0; i < cost->cost_b; i++) rotate_stack(stat->stack_b);
-	}
-	push_stack(stat->stack_b, stat->stack_a);
-}
-
-void	align_stack_a(t_stack *a)
-{
-	int	size = get_stack_size(a);
-	int	min_val, min_idx = 0, cur_idx, i;
-
-	if (size <= 1) return ;
-	cur_idx = a->top_index;
-	min_val = a->datas[cur_idx];
-	for (i = 0; i < size; i++)
-	{
-		if (a->datas[cur_idx] < min_val)
+		if (is_target_chunk(stat, cur_idx, chunk_size, target_chunk))
 		{
-			min_val = a->datas[cur_idx];
+			calculate_move_cost(stat, get_insert_pos_a(stat->stack_a,
+					stat->stack_b->datas[cur_idx]), i, &cost);
+			if (calc_total_cost(&cost) < calc_total_cost(best_cost))
+				*best_cost = cost;
+		}
+		cur_idx = prev_idx(stat->stack_b, cur_idx);
+	}
+}
+
+static void	align_helper(t_push_swap_stat *stat, int min_idx, int size)
+{
+	int		i;
+
+	i = 0;
+	if (min_idx <= size / 2)
+	{
+		while (i++ < min_idx)
+		{
+			if (rotate_stack(stat->stack_a))
+				store_op(stat->op_buffer, OP_RA);
+		}
+	}
+	else
+	{
+		while (i++ < size - min_idx)
+		{
+			if (rrotate_stack(stat->stack_a))
+				store_op(stat->op_buffer, OP_RRA);
+		}
+	}
+}
+
+void	align_stack_a(t_push_swap_stat *stat)
+{
+	int	size;
+	int	min_val;
+	int	min_idx;
+	int	cur_idx;
+	int	i;
+
+	size = get_stack_size(stat->stack_a);
+	if (size <= 1)
+		return ;
+	cur_idx = stat->stack_a->top_index;
+	min_val = stat->stack_a->datas[cur_idx];
+	min_idx = 0;
+	i = 0;
+	while (i < size)
+	{
+		if (stat->stack_a->datas[cur_idx] < min_val)
+		{
+			min_val = stat->stack_a->datas[cur_idx];
 			min_idx = i;
 		}
-		cur_idx = prev_idx(a, cur_idx);
+		cur_idx = prev_idx(stat->stack_a, cur_idx);
+		i++;
 	}
-	if (min_idx <= size / 2)
-		for (i = 0; i < min_idx; i++) rotate_stack(a);
-	else
-		for (i = 0; i < size - min_idx; i++) rrotate_stack(a);
+	align_helper(stat, min_idx, size);
 }
 
-void	return_to_a_by_chunk(t_push_swap_stat *stat, int chunk_size, int total_chunks)
+void	return_to_a_by_chunk(t_push_swap_stat *stat, int chunk_size,
+			int total_chunks)
 {
-	int		target, len_a, len_b, i, cur, val, rank, c_idx, pos_a, found, total, min_total;
-	t_cost	cur_cost, best_cost;
-	int		total_n = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
+	int		target_chunk;
+	t_cost	best_cost;
 
-	for (target = total_chunks - 1; target >= 0; target--)
+	small_sort(stat, stat->stack_a, stat->stack_b,
+		get_stack_size(stat->stack_a));
+	target_chunk = total_chunks - 1;
+	while (target_chunk >= 0)
 	{
 		while (1)
 		{
-			len_b = get_stack_size(stat->stack_b);
-			if (len_b == 0) break ;
-			len_a = get_stack_size(stat->stack_a);
-			cur = stat->stack_b->top_index;
-			found = 0;
-			min_total = 2147483647;
-			for (i = 0; i < len_b; i++)
-			{
-				val = stat->stack_b->datas[cur];
-				rank = get_rank(stat->sorted, total_n, val);
-				c_idx = get_chunk_idx(rank, chunk_size, total_chunks);
-				if (c_idx == target)
-				{
-					pos_a = get_insert_pos_a(stat->stack_a, val);
-					calculate_move_cost(i, len_b, pos_a, len_a, &cur_cost);
-					if (cur_cost.type == 0 || cur_cost.type == 1)
-						total = cur_cost.cost_a > cur_cost.cost_b ? cur_cost.cost_a : cur_cost.cost_b;
-					else
-						total = cur_cost.cost_a + cur_cost.cost_b;
-					if (total < min_total)
-					{
-						min_total = total;
-						best_cost = cur_cost;
-						found = 1;
-					}
-				}
-				cur = prev_idx(stat->stack_b, cur);
-			}
-			if (!found) break ;
+			best_cost.cost_a = 10000000;
+			best_cost.cost_b = 10000000;
+			best_cost.type = 0;
+			find_best_move(stat, chunk_size, target_chunk, &best_cost);
+			if (best_cost.cost_a == 10000000)
+				break ;
 			execute_move(stat, &best_cost);
 		}
+		target_chunk--;
 	}
-	align_stack_a(stat->stack_a);
+	align_stack_a(stat);
 }

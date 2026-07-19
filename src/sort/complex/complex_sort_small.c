@@ -14,33 +14,54 @@
 #include "ft_stack_internal.h"
 #include "push_swap_sort.h"
 
-int	small_sort(t_stack *s1, t_stack *s2, int size);
-int	small_sort_helper(t_stack *s1, t_stack *s2, int size);
+static void	push_twice(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
+{
+	if (push_stack(s2, s1))
+		store_op(stat->op_buffer, OP_PA);
+	if (push_stack(s2, s1))
+		store_op(stat->op_buffer, OP_PA);
+}
 
-int	small_sort(t_stack *s1, t_stack *s2, int size)
+int	small_sort(t_push_swap_stat *stat, t_stack *s1, t_stack *s2, int size)
 {
 	if (size <= 1)
 		return (1);
 	if (size == 2 && s1->datas[s1->top_index]
-			> s1->datas[prev_idx(s1, s1->top_index)])
-		return (swap_stack(s1));
+		> s1->datas[prev_idx(s1, s1->top_index)])
+	{
+		if (swap_stack(s1))
+			store_op(stat->op_buffer, OP_SA);
+		return (1);
+	}
 	if (size == 3)
-		return (three_sort_asc(s1, s2), 1);
+	{
+		three_sort_asc(stat, s1, s2);
+		return (1);
+	}
 	return (0);
 }
 
-int	small_sort_helper(t_stack *s1, t_stack *s2, int size)
+int	small_sort_helper(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
+		int size)
 {
 	if (size == 1)
-		return (push_stack(s2, s1));
+	{
+		if (push_stack(s2, s1))
+			store_op(stat->op_buffer, OP_PA);
+		return (1);
+	}
 	if (size == 2)
 	{
 		if (s2->datas[s2->top_index]
-				< s2->datas[prev_idx(s2, s2->top_index)])
-			swap_stack(s2);
-		return (push_stack(s2, s1), push_stack(s2, s1));
+			< s2->datas[prev_idx(s2, s2->top_index)])
+		{
+			if (swap_stack(s2))
+				store_op(stat->op_buffer, OP_SB);
+		}
+		push_twice(stat, s1, s2);
+		return (1);
 	}
 	if (size == 3)
-		return (three_sort_desc(s1, s2), 1);
+		return (three_sort_desc(stat, s1, s2), 1);
 	return (0);
 }

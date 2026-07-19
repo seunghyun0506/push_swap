@@ -17,39 +17,10 @@
 #include <complex.h>
 #include <stdlib.h>
 
-int			parse_flag(t_push_swap_stat *stat);
 int			parse_stack(t_push_swap_stat *stat);
 void		sort(t_push_swap_stat *stat);
 static int	parse_integers(t_list **lst, const char *str);
 static void	list_to_stack(t_push_swap_stat *stat, t_list **lst, int node_cnt);
-
-int	parse_flag(t_push_swap_stat *stat)
-{
-	int	opt_cnt;
-	int	bench_cnt;
-
-	opt_cnt = 0;
-	bench_cnt = 0;
-	while (stat->i < stat->argc)
-	{
-		if (ft_strcmp(stat->argv[stat->i], "--simple") == 0 && ++opt_cnt)
-			stat->option = 1;
-		else if (ft_strcmp(stat->argv[stat->i], "--medium") == 0 && ++opt_cnt)
-			stat->option = 2;
-		else if (ft_strcmp(stat->argv[stat->i], "--complex") == 0 && ++opt_cnt)
-			stat->option = 3;
-		else if (ft_strcmp(stat->argv[stat->i], "--adaptive") == 0 && ++opt_cnt)
-			stat->option = 0;
-		else if (ft_strcmp(stat->argv[stat->i], "--bench") == 0 && ++bench_cnt)
-			stat->bench = 1;
-		else
-			break ;
-		stat->i++;
-	}
-	if (opt_cnt > 1 || bench_cnt > 1)
-		return (0);
-	return (1);
-}
 
 void	sort(t_push_swap_stat *stat)
 {
@@ -90,13 +61,30 @@ int	parse_stack(t_push_swap_stat *stat)
 	return (1);
 }
 
+static int	add_node(t_list **lst, int num)
+{
+	int		*tmp_int;
+	t_list	*tmp;
+
+	tmp_int = (int *)malloc(sizeof(int));
+	if (!tmp_int)
+		return (0);
+	*tmp_int = num;
+	tmp = ft_lstnew(tmp_int);
+	if (!tmp)
+	{
+		free(tmp_int);
+		return (0);
+	}
+	ft_lstadd_front(lst, tmp);
+	return (1);
+}
+
 static int	parse_integers(t_list **lst, const char *str)
 {
 	int			num;
 	int			cnt;
 	const char	*pos;
-	int			*tmp_int;
-	t_list		*tmp;
 
 	cnt = 0;
 	while (*str != '\0')
@@ -106,14 +94,8 @@ static int	parse_integers(t_list **lst, const char *str)
 		num = ft_strtoi(str, &pos);
 		if (str == pos || (*pos != '\0' && !ft_isspace(*pos)))
 			return (ft_lstclear(lst, free), -1);
-		tmp_int = (int *)malloc(sizeof(int));
-		if (!tmp_int)
+		if (!add_node(lst, num))
 			return (ft_lstclear(lst, free), -1);
-		*tmp_int = num;
-		tmp = ft_lstnew(tmp_int);
-		if (!tmp)
-			return (free(tmp_int), ft_lstclear(lst, free), -1);
-		ft_lstadd_front(lst, tmp);
 		cnt++;
 		str = pos;
 	}

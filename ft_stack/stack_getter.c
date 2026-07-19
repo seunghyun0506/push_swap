@@ -12,13 +12,13 @@
 
 #include "ft_stack.h"
 
-int		get_stack_top(t_stack *s, int *res);
-int		get_stack_size(t_stack *s);
-int		next_idx(t_stack *s, int num);
-int		prev_idx(t_stack *s, int num);
-int		is_stack_full(t_stack *s);
+int	get_stack_top(t_stack *s, int *res);
+int	get_stack_size(t_stack *s);
+int	next_idx(t_stack *s, int num);
+int	prev_idx(t_stack *s, int num);
+int	is_stack_full(t_stack *s);
 
-int		get_stack_top(t_stack *s, int *res)
+int	get_stack_top(t_stack *s, int *res)
 {
 	if (get_stack_size(s) <= 0)
 		return (0);
@@ -26,22 +26,26 @@ int		get_stack_top(t_stack *s, int *res)
 	return (1);
 }
 
-int		is_stack_full(t_stack *s)
+int	is_stack_full(t_stack *s)
 {
 	return (get_stack_size(s) == s->capacity);
 }
 
-int		get_stack_size(t_stack *s)
+int	get_stack_size(t_stack *s)
 {
-	return ((s->top_index - s->bottom_index + s->capacity + 1) % (s->capacity + 1));
+	int	size;
+
+	size = (s->top_index - s->bottom_index + s->capacity + 1)
+		% (s->capacity + 1);
+	return (size);
 }
 
-int		next_idx(t_stack *s, int num)
+int	next_idx(t_stack *s, int num)
 {
-	return (num + 1) % (s->capacity + 1);
+	return ((num + 1) % (s->capacity + 1));
 }
 
-int		prev_idx(t_stack *s, int num)
+int	prev_idx(t_stack *s, int num)
 {
-	return (num - 1 + (s->capacity + 1)) % (s->capacity + 1);
+	return ((num - 1 + (s->capacity + 1)) % (s->capacity + 1));
 }

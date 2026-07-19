@@ -15,6 +15,7 @@
 int	push_stack(t_stack *from, t_stack *to)
 {
 	int	res;
+
 	if (get_stack_size(from) == 0)
 		return (0);
 	if (!pop_stack_data(from, &res))

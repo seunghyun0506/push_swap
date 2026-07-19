@@ -6,23 +6,26 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/04 10:48:57 by slim              #+#    #+#             */
-/*   Updated: 2026/07/06 11:33:43 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/19 18:12:57 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_stack.h"
 #include "ft_stack_internal.h"
 
-int	rrotate_stack(t_stack *s);
-int	rrotate_stacks(t_stack *s1, t_stack *s2);
-
 int	rrotate_stack(t_stack *s)
 {
+	int	next_top;
+	int	next_bottom;
+
 	if (get_stack_size(s) <= 1)
 		return (0);
-	s->top_index = prev_idx(s, s->top_index);
-	s->bottom_index = prev_idx(s, s->bottom_index);
-	s->datas[s->top_index] = s->datas[s->bottom_index];
+
+	next_top = next_idx(s, s->top_index);
+	next_bottom = next_idx(s, s->bottom_index);
+	s->datas[next_top] = s->datas[next_bottom];
+	s->top_index = next_top;
+	s->bottom_index = next_bottom;
 	return (1);
 }
 
@@ -30,5 +33,7 @@ int	rrotate_stacks(t_stack *s1, t_stack *s2)
 {
 	if (get_stack_size(s1) <= 1 || get_stack_size(s2) <= 1)
 		return (0);
-	return (rrotate_stack(s1), rrotate_stack(s2));
+	rrotate_stack(s1);
+	rrotate_stack(s2);
+	return (1);
 }

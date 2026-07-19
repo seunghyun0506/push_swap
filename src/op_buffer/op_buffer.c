@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "op_buffer.h"
+#include "libft.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -21,12 +22,14 @@ t_op_buffer	*init_op_buffer(void)
 	buffer = (t_op_buffer *)malloc(sizeof(t_op_buffer));
 	if (!buffer)
 		return (NULL);
-	buffer->ops = vecnew(32);
-	if (!buffer->ops)
+	buffer->arr = (t_op *)malloc(sizeof(t_op) * 32);
+	if (!buffer->arr)
 	{
 		free(buffer);
 		return (NULL);
 	}
+	buffer->idx = 0;
+	buffer->capacity = 32;
 	return (buffer);
 }
 
@@ -34,7 +37,7 @@ void	free_op_buffer(t_op_buffer *buffer)
 {
 	if (!buffer)
 		return ;
-	vecdel(buffer->ops);
+	free(buffer->arr);
 	free(buffer);
 }
 
@@ -65,6 +68,26 @@ static int	get_action_type(t_op top, t_op cur, t_op *merged)
 	return (0);
 }
 
+static int	resize_op_buffer(t_op_buffer *buffer)
+{
+	t_op	*new_arr;
+	int		i;
+
+	buffer->capacity *= 2;
+	new_arr = (t_op *)malloc(sizeof(t_op) * buffer->capacity);
+	if (!new_arr)
+		return (0);
+	i = 0;
+	while (i < buffer->idx)
+	{
+		new_arr[i] = buffer->arr[i];
+		i++;
+	}
+	free(buffer->arr);
+	buffer->arr = new_arr;
+	return (1);
+}
+
 void	store_op(t_op_buffer *buffer, t_op op)
 {
 	t_op	current;
@@ -75,61 +98,55 @@ void	store_op(t_op_buffer *buffer, t_op op)
 	if (!buffer || op == OP_NONE)
 		return ;
 	current = op;
-	while (buffer->ops->idx > 0)
+	while (buffer->idx > 0)
 	{
-		top = (t_op)buffer->ops->arr[buffer->ops->idx - 1];
+		top = buffer->arr[buffer->idx - 1];
 		action = get_action_type(top, current, &merged);
+		if (action == 0)
+			break ;
+		buffer->idx--;
 		if (action == 1)
 		{
-			vecremove(buffer->ops, buffer->ops->idx - 1);
 			current = OP_NONE;
 			break ;
 		}
-		else if (action == 2)
-		{
-			vecremove(buffer->ops, buffer->ops->idx - 1);
-			current = merged;
-		}
-		else
-			break ;
+		current = merged;
 	}
 	if (current != OP_NONE)
-		vecadd_back(buffer->ops, current);
+	{
+		if (buffer->idx >= buffer->capacity)
+		{
+			if (!resize_op_buffer(buffer))
+				return ;
+		}
+		buffer->arr[buffer->idx++] = current;
+	}
 }
 
 void	print_op_buffer(t_op_buffer *buffer)
 {
-	int		i;
-	t_op	op;
+	int			i;
+	const char	*names[12];
 
-	if (!buffer || !buffer->ops)
+	if (!buffer || !buffer->arr)
 		return ;
+	names[OP_NONE] = "";
+	names[OP_SA] = "sa\n";
+	names[OP_SB] = "sb\n";
+	names[OP_SS] = "ss\n";
+	names[OP_PA] = "pa\n";
+	names[OP_PB] = "pb\n";
+	names[OP_RA] = "ra\n";
+	names[OP_RB] = "rb\n";
+	names[OP_RR] = "rr\n";
+	names[OP_RRA] = "rra\n";
+	names[OP_RRB] = "rrb\n";
+	names[OP_RRR] = "rrr\n";
 	i = 0;
-	while (i < buffer->ops->idx)
+	while (i < buffer->idx)
 	{
-		op = (t_op)buffer->ops->arr[i];
-		if (op == OP_SA)
-			write(1, "sa\n", 3);
-		else if (op == OP_SB)
-			write(1, "sb\n", 3);
-		else if (op == OP_SS)
-			write(1, "ss\n", 3);
-		else if (op == OP_PA)
-			write(1, "pa\n", 3);
-		else if (op == OP_PB)
-			write(1, "pb\n", 3);
-		else if (op == OP_RA)
-			write(1, "ra\n", 3);
-		else if (op == OP_RB)
-			write(1, "rb\n", 3);
-		else if (op == OP_RR)
-			write(1, "rr\n", 3);
-		else if (op == OP_RRA)
-			write(1, "rra\n", 4);
-		else if (op == OP_RRB)
-			write(1, "rrb\n", 4);
-		else if (op == OP_RRR)
-			write(1, "rrr\n", 4);
+		if (buffer->arr[i] >= OP_SA && buffer->arr[i] <= OP_RRR)
+			ft_putstr_fd((char *)names[buffer->arr[i]], 1);
 		i++;
 	}
 }

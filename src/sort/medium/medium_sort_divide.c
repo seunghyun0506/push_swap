@@ -5,15 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/18 00:03:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/18 00:03:00 by slim             ###   ########.fr       */
+/*   Created: 2026/07/17 23:59:00 by slim              #+#    #+#             */
+/*   Updated: 2026/07/17 23:59:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap_sort.h"
 #include "ft_stack_internal.h"
 
-static int	get_rank(int *sorted, int n, int val)
+int	get_rank(int *sorted, int n, int val)
 {
 	int	left;
 	int	right;
@@ -34,79 +34,106 @@ static int	get_rank(int *sorted, int n, int val)
 	return (-1);
 }
 
-static int	get_chunk_idx(int rank, int chunk_size, int total_chunks)
+static void	find_dists(t_push_swap_stat *stat, t_divide *div)
 {
-	int	idx;
+	int	cur_idx;
+	int	cur_val;
+	int	rank;
+	int	i;
 
-	idx = rank / chunk_size;
-	if (idx >= total_chunks)
-		idx = total_chunks - 1;
-	return (idx);
-}
-
-static int	is_target(int chunk_idx, int step, int mid, int total_chunks)
-{
-	if (step == 0)
-		return (chunk_idx == mid);
-	if (mid - step >= 0 && chunk_idx == mid - step)
-		return (1);
-	if (mid + step < total_chunks && chunk_idx == mid + step)
-		return (1);
-	return (0);
-}
-
-static void	execute_push(t_push_swap_stat *stat, int chunk_idx, int step, int mid)
-{
-	push_stack(stat->stack_a, stat->stack_b);
-	if (step > 0 && chunk_idx == mid - step)
-		rotate_stack(stat->stack_b);
-}
-
-void	divide_by_chunks(t_push_swap_stat *stat, int chunk_size, int total_chunks)
-{
-	int	mid = total_chunks / 2;
-	int	max_step = mid;
-	int	step, i, size, top_dist, bot_dist, cur_idx, rank, chunk_idx;
-	int	total_n = get_stack_size(stat->stack_a);
-
-	if (total_chunks - 1 - mid > max_step)
-		max_step = total_chunks - 1 - mid;
-	for (step = 0; step <= max_step; step++)
+	cur_idx = stat->stack_a->top_index;
+	div->top_dist = -1;
+	i = -1;
+	while (++i < div->total_n)
 	{
-		while (1)
+		cur_val = stat->stack_a->datas[cur_idx];
+		rank = get_rank(stat->sorted, div->total_n, cur_val);
+		if (rank >= div->mid - div->step && rank <= div->mid + div->step)
 		{
-			size = get_stack_size(stat->stack_a);
-			top_dist = -1;
-			bot_dist = -1;
-			cur_idx = stat->stack_a->top_index;
-			for (i = 0; i < size; i++)
+			if (div->top_dist == -1)
 			{
-				rank = get_rank(stat->sorted, total_n, stat->stack_a->datas[cur_idx]);
-				chunk_idx = get_chunk_idx(rank, chunk_size, total_chunks);
-				if (is_target(chunk_idx, step, mid, total_chunks))
-				{
-					if (top_dist == -1)
-						top_dist = i;
-					bot_dist = i;
-				}
-				cur_idx = prev_idx(stat->stack_a, cur_idx);
-			}
-			if (top_dist == -1)
-				break ;
-			if (top_dist <= size - bot_dist)
-			{
-				for (i = 0; i < top_dist; i++)
-					rotate_stack(stat->stack_a);
+				div->top_dist = i;
+				div->bot_dist = i;
 			}
 			else
-			{
-				for (i = 0; i < size - bot_dist; i++)
-					rrotate_stack(stat->stack_a);
-			}
-			get_stack_top(stat->stack_a, &cur_idx);
-			rank = get_rank(stat->sorted, total_n, cur_idx);
-			chunk_idx = get_chunk_idx(rank, chunk_size, total_chunks);
-			execute_push(stat, chunk_idx, step, mid);
+				div->bot_dist = i;
 		}
+		cur_idx = prev_idx(stat->stack_a, cur_idx);
+	}
+}
+
+static void	move_to_top(t_push_swap_stat *stat, int top_dist, int bot_dist)
+{
+	int		i;
+	int		size;
+
+	size = get_stack_size(stat->stack_a);
+	i = 0;
+	if (top_dist <= size - bot_dist)
+	{
+		while (i++ < top_dist)
+		{
+			if (rotate_stack(stat->stack_a))
+				store_op(stat->op_buffer, OP_RA);
+		}
+	}
+	else
+	{
+		while (i++ < size - bot_dist)
+		{
+			if (rrotate_stack(stat->stack_a))
+				store_op(stat->op_buffer, OP_RRA);
+		}
+	}
+}
+
+static void	do_divide(t_push_swap_stat *stat, t_divide *div)
+{
+	int		cur;
+
+	while (1)
+	{
+		find_dists(stat, div);
+		if (div->top_dist == -1)
+			break ;
+		move_to_top(stat, div->top_dist, div->bot_dist);
+		get_stack_top(stat->stack_a, &cur);
+		cur = get_rank(stat->sorted, div->total_n, cur) / div->chunk_size;
+		if (cur >= div->total_chunks)
+			cur = div->total_chunks - 1;
+		if (push_stack(stat->stack_a, stat->stack_b))
+			store_op(stat->op_buffer, OP_PB);
+		if (div->step > 0 && cur == div->mid - div->step)
+		{
+			if (rotate_stack(stat->stack_b))
+				store_op(stat->op_buffer, OP_RB);
+		}
+	}
+}
+
+void	divide_by_chunks(t_push_swap_stat *stat, int chunk_size,
+			int total_chunks)
+{
+	t_divide	div;
+
+	div.chunk_size = chunk_size;
+	div.total_chunks = total_chunks;
+	div.total_n = get_stack_size(stat->stack_a);
+	div.mid = total_chunks / 2;
+	div.step = 0;
+	div.max_step = total_chunks - div.mid;
+	if (total_chunks % 2 == 0)
+		div.max_step = total_chunks / 2 - 1;
+	while (div.step <= div.max_step)
+	{
+		do_divide(stat, &div);
+		div.step++;
+	}
+	while (get_stack_size(stat->stack_a) > 3)
+	{
+		div.top_dist = 0;
+		div.bot_dist = get_stack_size(stat->stack_a) - 1;
+		move_to_top(stat, div.top_dist, div.bot_dist);
+		push_stack(stat->stack_a, stat->stack_b);
 	}
 }

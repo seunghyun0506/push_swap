@@ -13,28 +13,14 @@
 #ifndef OP_BUFFER_H
 # define OP_BUFFER_H
 
-# include "ft_vector.h"
+# include "ft_stack.h"
 
 typedef struct s_op_buffer
 {
-	t_vector	*ops;
+	t_op	*arr;
+	int		idx;
+	int		capacity;
 }	t_op_buffer;
-
-typedef enum e_op
-{
-	OP_NONE,
-	OP_SA,
-	OP_SB,
-	OP_SS,
-	OP_PA,
-	OP_PB,
-	OP_RA,
-	OP_RB,
-	OP_RR,
-	OP_RRA,
-	OP_RRB,
-	OP_RRR
-}	t_op;
 
 t_op_buffer	*init_op_buffer(void);
 void		store_op(t_op_buffer *buffer, t_op op);

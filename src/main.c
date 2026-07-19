@@ -35,6 +35,9 @@ int	main(int argc, char **argv)
 		return (write(1, "Error\n", 6), 1);
 	}
 	sort(&stat);
+	if (!stat.bench)
+		print_op_buffer(stat.op_buffer);
+	free_op_buffer(stat.op_buffer);
 	destroy_stack(stat.stack_a);
 	destroy_stack(stat.stack_b);
 	free(stat.sorted);

@@ -12,7 +12,7 @@
 
 #include "push_swap_sort.h"
 
-void	align_a(t_stack *a)
+void	align_a(t_push_swap_stat *stat)
 {
-	align_stack_a(a);
+	align_stack_a(stat);
 }

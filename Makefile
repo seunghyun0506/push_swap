@@ -2,7 +2,7 @@ NAME        = push_swap
 
 CFLAGS      = -Wall -Werror -Wextra
 DEPFLAGS    = -MMD -MP
-INCFLAGS    = -I./include -I./ft_stack/include -I./libft/include -I./src/ft_vector/include
+INCFLAGS    = -I./include -I./ft_stack/include -I./libft/include
 
 SRC_DIR     = ./src
 OUT_DIR     = ./out
@@ -26,15 +26,13 @@ LIBFT       = ./libft
 LIBFT_A     = ./libft/libft.a
 FT_STACK    = ./ft_stack
 FT_STACK_A  = ./ft_stack/ft_stack.a
-FT_VECTOR   = ./src/ft_vector
-FT_VECTOR_A = ./src/ft_vector/ft_vector.a
 
 RM          = rm -rf
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIBFT_A) $(FT_STACK_A) $(FT_VECTOR_A)
-	cc $(CFLAGS) $(OBJ) $(FT_STACK_A) $(FT_VECTOR_A) $(LIBFT_A) $(INCFLAGS) -o $(NAME)
+$(NAME): $(OBJ) $(LIBFT_A) $(FT_STACK_A)
+	cc $(CFLAGS) $(OBJ) $(FT_STACK_A) $(LIBFT_A) $(INCFLAGS) -o $(NAME)
 
 $(LIBFT_A): FORCE
 	make -C $(LIBFT)
@@ -42,8 +40,6 @@ $(LIBFT_A): FORCE
 $(FT_STACK_A): FORCE
 	make -C $(FT_STACK)
 
-$(FT_VECTOR_A): FORCE
-	make -C $(FT_VECTOR)
 
 $(OUT_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -53,13 +49,11 @@ clean:
 	$(RM) $(OBJ) $(DEPS)
 	make -C $(LIBFT) clean
 	make -C $(FT_STACK) clean
-	make -C $(FT_VECTOR) clean
 
 fclean: clean
 	$(RM) $(NAME)
 	make -C $(LIBFT) fclean
 	make -C $(FT_STACK) fclean
-	make -C $(FT_VECTOR) fclean
 
 re: fclean all
 

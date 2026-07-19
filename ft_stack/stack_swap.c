@@ -29,7 +29,9 @@ int	swap_stacks(t_stack *s1, t_stack *s2)
 {
 	if (get_stack_size(s1) <= 1 || get_stack_size(s2) <= 1)
 		return (0);
-	return (swap_stack(s1), swap_stack(s2));
+	swap_stack(s1);
+	swap_stack(s2);
+	return (1);
 }
 
 static void	swap(int *num1, int *num2)
