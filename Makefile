@@ -2,7 +2,7 @@ NAME        = push_swap
 
 CFLAGS      = -Wall -Werror -Wextra
 DEPFLAGS    = -MMD -MP
-INCFLAGS    = -I./include -I./ft_stack/include -I./libft/include -I./ft_vector/include
+INCFLAGS    = -I./include -I./ft_stack/include -I./libft/include -I./src/ft_vector/include
 
 SRC_DIR     = ./src
 OUT_DIR     = ./out
@@ -13,7 +13,10 @@ SRC_FILES   = main.c push_swap.c push_swap_stat.c check_duplicate.c \
               sort/complex/complex_sort_small.c sort/complex/complex_sort_util.c \
               sort/complex/complex_sort.c sort/three_sort.c \
               sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
-              sort/medium/medium_sort_cost.c sort/medium/medium_sort_return.c
+              sort/medium/medium_sort_cost.c sort/medium/medium_sort_return.c \
+              sort/simple/simple_sort.c sort/simple/get_lis.c \
+              sort/simple/greedy.c sort/simple/align.c \
+              op_buffer/op_buffer.c
 
 SRC         = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ         = $(addprefix $(OUT_DIR)/, $(SRC_FILES:.c=.o))
@@ -23,21 +26,24 @@ LIBFT       = ./libft
 LIBFT_A     = ./libft/libft.a
 FT_STACK    = ./ft_stack
 FT_STACK_A  = ./ft_stack/ft_stack.a
-FT_VECTOR   = ./ft_stack
-FT_STACK_A  = ./ft_stack/ft_stack.a
+FT_VECTOR   = ./src/ft_vector
+FT_VECTOR_A = ./src/ft_vector/ft_vector.a
 
 RM          = rm -rf
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIBFT_A) $(FT_STACK_A)
-	cc $(CFLAGS) $(OBJ) $(FT_STACK_A) $(LIBFT_A) $(INCFLAGS) -o $(NAME)
+$(NAME): $(OBJ) $(LIBFT_A) $(FT_STACK_A) $(FT_VECTOR_A)
+	cc $(CFLAGS) $(OBJ) $(FT_STACK_A) $(FT_VECTOR_A) $(LIBFT_A) $(INCFLAGS) -o $(NAME)
 
 $(LIBFT_A): FORCE
 	make -C $(LIBFT)
 
 $(FT_STACK_A): FORCE
 	make -C $(FT_STACK)
+
+$(FT_VECTOR_A): FORCE
+	make -C $(FT_VECTOR)
 
 $(OUT_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -47,11 +53,13 @@ clean:
 	$(RM) $(OBJ) $(DEPS)
 	make -C $(LIBFT) clean
 	make -C $(FT_STACK) clean
+	make -C $(FT_VECTOR) clean
 
 fclean: clean
 	$(RM) $(NAME)
 	make -C $(LIBFT) fclean
 	make -C $(FT_STACK) fclean
+	make -C $(FT_VECTOR) fclean
 
 re: fclean all
 

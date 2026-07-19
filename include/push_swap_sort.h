@@ -35,4 +35,9 @@ int		small_sort_helper(t_stack *s1, t_stack *s2, int size);
 void	three_sort_asc(t_stack *s1, t_stack *s2);
 void	three_sort_desc(t_stack *s1, t_stack *s2);
 
+int		simple_sort(t_push_swap_stat *stat);
+void	lis_to_b(t_push_swap_stat *stat);
+void	greedy_to_a(t_push_swap_stat *stat);
+void	align_a(t_stack *a);
+
 #endif

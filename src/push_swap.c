@@ -53,10 +53,14 @@ int	parse_flag(t_push_swap_stat *stat)
 
 void	sort(t_push_swap_stat *stat)
 {
-	if (stat->option == 3)
-	{
+	if (stat->option == 1)
+		simple_sort(stat);
+	else if (stat->option == 2)
+		medium_sort(stat);
+	else if (stat->option == 3)
 		complex_sort(stat);
-	}
+	else
+		simple_sort(stat);
 }
 
 int	parse_stack(t_push_swap_stat *stat)

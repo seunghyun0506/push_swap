@@ -8,7 +8,7 @@ libft/out
 libft/libft.a
 out
 push_swap.exe
-ft_vector/out
-ft_vector/ft_vector.a
+src/ft_vector/out
+src/ft_vector/ft_vector.a
 .clangd
 *.py
