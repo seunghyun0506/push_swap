@@ -6,12 +6,11 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 12:53:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/20 14:56:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/20 16:52:19 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "op_buffer.h"
-#include "libft.h"
 #include <stdlib.h>
 #include <unistd.h>
 
