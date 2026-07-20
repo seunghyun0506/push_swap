@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/10 06:32:51 by slim              #+#    #+#             */
-/*   Updated: 2026/07/17 19:29:50 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/20 14:56:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,23 @@ void		rewind_stack(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 static void	op_push(t_push_swap_stat *stat, t_stack *from, t_stack *to,
 				t_op op_type)
 {
-	if (push_stack(from, to))
-		store_op(stat->op_buffer, op_type);
+	t_op	op;
+
+	op = op_type;
+	push_stack(from, to, &op);
+	store_op(stat->op_buffer, op);
 }
 
 static void	op_rot(t_push_swap_stat *stat, t_stack *s, t_op op_type, int dir)
 {
+	t_op	op;
+
+	op = op_type;
 	if (dir == 0)
-	{
-		if (rotate_stack(s))
-			store_op(stat->op_buffer, op_type);
-	}
+		rotate_stack(s, &op);
 	else
-	{
-		if (rrotate_stack(s))
-			store_op(stat->op_buffer, op_type);
-	}
+		rrotate_stack(s, &op);
+	store_op(stat->op_buffer, op);
 }
 
 void	partition_asc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
@@ -107,14 +108,17 @@ void	partition_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 void	rewind_stack(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 			int *sizes)
 {
+	t_op	op;
+
 	if (get_stack_size(s1) == sizes[0])
 		sizes[0] = 0;
 	if (get_stack_size(s2) == sizes[1])
 		sizes[1] = 0;
 	while (sizes[0] && sizes[1])
 	{
-		if (rrotate_stacks(s1, s2))
-			store_op(stat->op_buffer, OP_RRR);
+		op = OP_RRR;
+		rrotate_stacks(s1, s2, &op);
+		store_op(stat->op_buffer, op);
 		sizes[0]--;
 		sizes[1]--;
 	}

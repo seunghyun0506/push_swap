@@ -43,16 +43,16 @@ void	destroy_stack(t_stack *s);
 int		push_stack_data(t_stack *s, int data);
 int		pop_stack_data(t_stack *s, int *res);
 
-int		rotate_stack(t_stack *s);
-int		rotate_stacks(t_stack *s1, t_stack *s2);
+int		rotate_stack(t_stack *s, t_op *op);
+int		rotate_stacks(t_stack *s1, t_stack *s2, t_op *op);
 
-int		rrotate_stack(t_stack *s);
-int		rrotate_stacks(t_stack *s1, t_stack *s2);
+int		rrotate_stack(t_stack *s, t_op *op);
+int		rrotate_stacks(t_stack *s1, t_stack *s2, t_op *op);
 
-int		swap_stack(t_stack *s);
-int		swap_stacks(t_stack *s1, t_stack *s2);
+int		swap_stack(t_stack *s, t_op *op);
+int		swap_stacks(t_stack *s1, t_stack *s2, t_op *op);
 
-int		push_stack(t_stack *from, t_stack *to);
+int		push_stack(t_stack *from, t_stack *to, t_op *op);
 
 int		is_stack_full(t_stack *s);
 int		get_stack_top(t_stack *s, int *res);

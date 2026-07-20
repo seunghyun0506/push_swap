@@ -13,14 +13,17 @@
 #include "ft_stack.h"
 #include "ft_stack_internal.h"
 
-int	rrotate_stack(t_stack *s)
+int	rrotate_stack(t_stack *s, t_op *op)
 {
 	int	next_top;
 	int	next_bottom;
 
 	if (get_stack_size(s) <= 1)
+	{
+		if (op)
+			*op = OP_NONE;
 		return (0);
-
+	}
 	next_top = next_idx(s, s->top_index);
 	next_bottom = next_idx(s, s->bottom_index);
 	s->datas[next_top] = s->datas[next_bottom];
@@ -29,11 +32,15 @@ int	rrotate_stack(t_stack *s)
 	return (1);
 }
 
-int	rrotate_stacks(t_stack *s1, t_stack *s2)
+int	rrotate_stacks(t_stack *s1, t_stack *s2, t_op *op)
 {
 	if (get_stack_size(s1) <= 1 || get_stack_size(s2) <= 1)
+	{
+		if (op)
+			*op = OP_NONE;
 		return (0);
-	rrotate_stack(s1);
-	rrotate_stack(s2);
+	}
+	rrotate_stack(s1, 0);
+	rrotate_stack(s2, 0);
 	return (1);
 }

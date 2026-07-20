@@ -17,14 +17,20 @@
 static void	op_push(t_push_swap_stat *stat, t_stack *from, t_stack *to,
 				t_op op_type)
 {
-	if (push_stack(from, to))
-		store_op(stat->op_buffer, op_type);
+	t_op	op;
+
+	op = op_type;
+	push_stack(from, to, &op);
+	store_op(stat->op_buffer, op);
 }
 
 static void	op_swap(t_push_swap_stat *stat, t_stack *s, t_op op_type)
 {
-	if (swap_stack(s))
-		store_op(stat->op_buffer, op_type);
+	t_op	op;
+
+	op = op_type;
+	swap_stack(s, &op);
+	store_op(stat->op_buffer, op);
 }
 
 static void	three_sort_asc_cases(t_push_swap_stat *stat, t_stack *s1,

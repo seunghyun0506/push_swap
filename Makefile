@@ -14,8 +14,7 @@ SRC_FILES   = main.c push_swap.c push_swap_stat.c check_duplicate.c \
               sort/complex/complex_sort.c sort/three_sort.c \
               sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
               sort/medium/medium_sort_cost.c sort/medium/medium_sort_return.c \
-              sort/simple/simple_sort.c sort/simple/get_lis.c \
-              sort/simple/greedy.c sort/simple/align.c \
+              sort/simple/simple_sort.c sort/simple/align.c \
               op_buffer/op_buffer.c
 
 SRC         = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
