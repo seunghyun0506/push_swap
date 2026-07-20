@@ -14,48 +14,63 @@
 #include "ft_stack_internal.h"
 #include <stdlib.h>
 
-static int	is_target_chunk(t_push_swap_stat *stat, int cur_idx,
-				int chunk_size, int target_chunk)
-{
-	int	val;
-	int	rank;
+static int	find_max_chunk_idx(t_push_swap_stat *stat, int chunk_idx, int n);
+static void	rotate_s_n(t_push_swap_stat *stat, t_stack *s, int rot);
+static void	push_max_to_a(t_push_swap_stat *stat, int max_idx);
 
-	val = stat->stack_b->datas[cur_idx];
-	rank = get_rank(stat->sorted, stat->stack_a->capacity, val);
-	return (rank / chunk_size == target_chunk);
+void	return_to_a_by_chunk(t_push_swap_stat *stat, int chunk_size,
+			int total_chunks)
+{
+	int		target;
+	int		max_idx;
+	int		n;
+
+	(void)chunk_size;
+	(void)total_chunks;
+	n = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
+	small_sort(stat, stat->stack_a, stat->stack_b,
+		get_stack_size(stat->stack_a));
+	target = get_num_chunks(n) - 1;
+	while (target >= 0)
+	{
+		while (1)
+		{
+			max_idx = find_max_chunk_idx(stat, target, n);
+			if (max_idx == -1)
+				break ;
+			push_max_to_a(stat, max_idx);
+		}
+		target--;
+	}
 }
 
-static int	find_max_chunk_idx(t_push_swap_stat *stat, int chunk_size,
-				int target_chunk)
+static int	find_max_chunk_idx(t_push_swap_stat *stat, int chunk_idx, int n)
 {
 	int	cur;
-	int	max_val;
-	int	max_idx;
+	int	max[2];
 	int	size;
 	int	i;
 
 	size = get_stack_size(stat->stack_b);
 	cur = stat->stack_b->top_index;
-	max_val = -2147483648;
-	max_idx = -1;
-	i = 0;
-	while (i < size)
+	max[0] = -2147483648;
+	max[1] = -1;
+	i = -1;
+	while (++i < size)
 	{
-		if (is_target_chunk(stat, cur, chunk_size, target_chunk))
+		if (is_in_chunk(stat, get_rank(stat->sorted, n,
+					stat->stack_b->datas[cur]), chunk_idx)
+			&& stat->stack_b->datas[cur] > max[0])
 		{
-			if (stat->stack_b->datas[cur] > max_val)
-			{
-				max_val = stat->stack_b->datas[cur];
-				max_idx = i;
-			}
+			max[0] = stat->stack_b->datas[cur];
+			max[1] = i;
 		}
 		cur = prev_idx(stat->stack_b, cur);
-		i++;
 	}
-	return (max_idx);
+	return (max[1]);
 }
 
-static void	rotate_s_n(t_push_swap_stat *stat, t_stack *s, int rot, int is_a)
+static void	rotate_s_n(t_push_swap_stat *stat, t_stack *s, int rot)
 {
 	int		i;
 	t_op	op;
@@ -66,62 +81,28 @@ static void	rotate_s_n(t_push_swap_stat *stat, t_stack *s, int rot, int is_a)
 		if (rot > 0)
 		{
 			op = OP_RB;
-			if (is_a)
-				op = OP_RA;
 			rotate_stack(s, &op);
 		}
 		else
 		{
 			op = OP_RRB;
-			if (is_a)
-				op = OP_RRA;
 			rrotate_stack(s, &op);
 		}
 		store_op(stat->op_buffer, op);
 	}
 }
 
-static void	push_next_to_a(t_push_swap_stat *stat, int max_idx)
+static void	push_max_to_a(t_push_swap_stat *stat, int max_idx)
 {
 	int		size_b;
-	int		pos_a;
 	t_op	op;
 
 	size_b = get_stack_size(stat->stack_b);
 	if (max_idx <= size_b / 2)
-		rotate_s_n(stat, stat->stack_b, max_idx, 0);
+		rotate_s_n(stat, stat->stack_b, max_idx);
 	else
-		rotate_s_n(stat, stat->stack_b, max_idx - size_b, 0);
-	pos_a = get_insert_pos_a(stat->stack_a,
-			stat->stack_b->datas[stat->stack_b->top_index]);
-	if (pos_a <= get_stack_size(stat->stack_a) / 2)
-		rotate_s_n(stat, stat->stack_a, pos_a, 1);
-	else
-		rotate_s_n(stat, stat->stack_a,
-			pos_a - get_stack_size(stat->stack_a), 1);
+		rotate_s_n(stat, stat->stack_b, max_idx - size_b);
 	op = OP_PA;
 	push_stack(stat->stack_b, stat->stack_a, &op);
 	store_op(stat->op_buffer, op);
-}
-
-void	return_to_a_by_chunk(t_push_swap_stat *stat, int chunk_size,
-			int total_chunks)
-{
-	int		target;
-	int		max_idx;
-
-	small_sort(stat, stat->stack_a, stat->stack_b,
-		get_stack_size(stat->stack_a));
-	target = total_chunks;
-	while (--target >= 0)
-	{
-		while (1)
-		{
-			max_idx = find_max_chunk_idx(stat, chunk_size, target);
-			if (max_idx == -1)
-				break ;
-			push_next_to_a(stat, max_idx);
-		}
-	}
-	align_stack_a(stat);
 }

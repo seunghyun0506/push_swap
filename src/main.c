@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/08 02:02:08 by slim              #+#    #+#             */
-/*   Updated: 2026/07/20 14:56:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/21 07:07:59 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,33 +18,28 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static void	free_resources(t_push_swap_stat *stat)
-{
-	free_op_buffer(stat->op_buffer);
-	destroy_stack(stat->stack_a);
-	destroy_stack(stat->stack_b);
-	free(stat->sorted);
-}
+static void	free_resources(t_push_swap_stat *stat);
+static int	is_sorted(t_stack *s);
+void		print_op_buffer(t_op_buffer *buffer);
 
-static int	is_sorted(t_stack *s)
+int	main(int argc, char **argv)
 {
-	int	cur;
-	int	i;
-	int	size;
+	t_push_swap_stat	stat;
 
-	size = get_stack_size(s);
-	if (size <= 1)
-		return (1);
-	cur = s->top_index;
-	i = 0;
-	while (i < size - 1)
-	{
-		if (s->datas[cur] > s->datas[prev_idx(s, cur)])
-			return (0);
-		cur = prev_idx(s, cur);
-		i++;
-	}
-	return (1);
+	if (argc <= 1)
+		return (0);
+	init_push_swap_stat(&stat, argc, argv);
+	if (!parse_flag(&stat) || !parse_stack(&stat))
+		return (write(2, "Error\n", 6), 1);
+	if (!check_duplicate(&stat))
+		return (free_resources(&stat), write(2, "Error\n", 6), 1);
+	if (is_sorted(stat.stack_a))
+		return (free_resources(&stat), 0);
+	sort(&stat);
+	print_op_buffer(stat.op_buffer);
+	if (stat.bench)
+		print_bench_info(&stat);
+	return (free_resources(&stat), 0);
 }
 
 void	print_op_buffer(t_op_buffer *buffer)
@@ -75,21 +70,31 @@ void	print_op_buffer(t_op_buffer *buffer)
 	}
 }
 
-int	main(int argc, char **argv)
+static void	free_resources(t_push_swap_stat *stat)
 {
-	t_push_swap_stat	stat;
+	free_op_buffer(stat->op_buffer);
+	destroy_stack(stat->stack_a);
+	destroy_stack(stat->stack_b);
+	free(stat->sorted);
+}
 
-	if (argc <= 1)
-		return (0);
-	init_push_swap_stat(&stat, argc, argv);
-	if (!parse_flag(&stat) || !parse_stack(&stat))
-		return (write(1, "Error\n", 6), 1);
-	if (!check_duplicate(&stat))
-		return (free_resources(&stat), write(1, "Error\n", 6), 1);
-	if (is_sorted(stat.stack_a))
-		return (free_resources(&stat), 0);
-	sort(&stat);
-	if (!stat.bench)
-		print_op_buffer(stat.op_buffer);
-	return (free_resources(&stat), 0);
+static int	is_sorted(t_stack *s)
+{
+	int	cur;
+	int	i;
+	int	size;
+
+	size = get_stack_size(s);
+	if (size <= 1)
+		return (1);
+	cur = s->top_index;
+	i = 0;
+	while (i < size - 1)
+	{
+		if (s->datas[cur] > s->datas[prev_idx(s, cur)])
+			return (0);
+		cur = prev_idx(s, cur);
+		i++;
+	}
+	return (1);
 }

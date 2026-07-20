@@ -13,6 +13,10 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
 # include <stddef.h>
 
 int		ft_isalpha(int ch);
@@ -72,4 +76,28 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+char	*get_next_line(int fd);
+
+typedef struct s_gnl_str
+{
+	char	*arr;
+	int		idx;
+	int		capacity;
+}	t_gnl_str;
+
+typedef struct s_gnl_buf
+{
+	char	*buffer;
+	int		idx;
+	int		capacity;
+}	t_gnl_buf;
+
+typedef struct s_gnl_node
+{
+	int					fd;
+	struct s_gnl_buf	buf;
+	struct s_gnl_node	*next;
+}	t_gnl_node;
+
 #endif

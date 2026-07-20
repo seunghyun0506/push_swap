@@ -14,15 +14,14 @@
 #include "ft_stack_internal.h"
 #include "push_swap_sort.h"
 #include "push_swap_stat.h"
-#include "merge_sort.h"
-#include <stdlib.h>
 
 int			complex_sort(t_push_swap_stat *stat);
 static int	complex_sort_helper_a(t_push_swap_stat *stat, t_stack *s1,
 				t_stack *s2, int size);
 static int	complex_sort_helper_b(t_push_swap_stat *stat, t_stack *s1,
 				t_stack *s2, int size);
-void		find_pivot(t_stack *s, int size, int *pivot1, int *pivot2);
+void		find_pivot(t_push_swap_stat *stat, t_stack *s,
+				int size, int *pivots);
 void		partition_asc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 				t_part *part);
 void		partition_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
@@ -79,25 +78,38 @@ static int	complex_sort_helper_b(t_push_swap_stat *stat, t_stack *s1,
 	return (1);
 }
 
-void	find_pivot(t_stack *s, int size, int *pivot1, int *pivot2)
+/*
+** find_pivot
+** : stat->sorted(파싱 시 1회만 정렬된 배열)를 활용하여
+**   현재 부분 스택 s의 원소들 중 1/3, 2/3 순위에 해당하는 피벗 값을 구합니다.
+**   기존에는 호출마다 malloc + merge_sort를 수행했지만,
+**   이제는 get_rank(O(log n)) 조회만으로 피벗을 선택합니다.
+**   pivots[0] = 1/3 피벗, pivots[1] = 2/3 피벗
+*/
+void	find_pivot(t_push_swap_stat *stat, t_stack *s,
+			int size, int *pivots)
 {
-	int	*arr;
+	int	n;
+	int	range[2];
+	int	cur;
 	int	i;
-	int	idx;
+	int	rank;
 
-	arr = (int *)malloc(sizeof(int) * size);
-	if (!arr)
-		return ;
+	n = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
+	cur = s->top_index;
+	range[0] = n;
+	range[1] = -1;
 	i = 0;
-	idx = s->top_index;
 	while (i < size)
 	{
-		arr[i] = s->datas[idx];
-		idx = prev_idx(s, idx);
+		rank = get_rank(stat->sorted, n, s->datas[cur]);
+		if (rank < range[0])
+			range[0] = rank;
+		if (rank > range[1])
+			range[1] = rank;
+		cur = prev_idx(s, cur);
 		i++;
 	}
-	merge_sort(arr, size);
-	*pivot1 = arr[size / 3];
-	*pivot2 = arr[(size * 2) / 3];
-	free(arr);
+	pivots[0] = stat->sorted[range[0] + (range[1] - range[0]) / 3];
+	pivots[1] = stat->sorted[range[0] + (range[1] - range[0]) * 2 / 3];
 }

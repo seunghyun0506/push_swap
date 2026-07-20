@@ -19,5 +19,6 @@ int		parse_stack(t_push_swap_stat *stat);
 void	sort(t_push_swap_stat *stat);
 int		check_duplicate(t_push_swap_stat *stat);
 double	compute_disorder(t_stack *a);
+void	print_bench_info(t_push_swap_stat *stat);
 
 #endif

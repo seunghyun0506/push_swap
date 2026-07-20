@@ -13,133 +13,126 @@
 #include "push_swap_sort.h"
 #include "ft_stack_internal.h"
 
-int	get_rank(int *sorted, int n, int val)
-{
-	int	left;
-	int	right;
-	int	mid;
-
-	left = 0;
-	right = n - 1;
-	while (left <= right)
-	{
-		mid = left + (right - left) / 2;
-		if (sorted[mid] == val)
-			return (mid);
-		if (sorted[mid] < val)
-			left = mid + 1;
-		else
-			right = mid - 1;
-	}
-	return (-1);
-}
-
-static void	find_dists(t_push_swap_stat *stat, t_divide *div)
-{
-	int	cur_idx;
-	int	rank;
-	int	i;
-	int	size;
-
-	cur_idx = stat->stack_a->top_index;
-	div->top_dist = -1;
-	size = get_stack_size(stat->stack_a);
-	i = -1;
-	while (++i < size)
-	{
-		rank = get_rank(stat->sorted, div->total_n,
-				stat->stack_a->datas[cur_idx]);
-		if (rank >= div->mid - div->step && rank <= div->mid + div->step)
-		{
-			if (div->top_dist == -1)
-				div->top_dist = i;
-			div->bot_dist = i;
-		}
-		cur_idx = prev_idx(stat->stack_a, cur_idx);
-	}
-}
-
-static void	move_to_top(t_push_swap_stat *stat, int top_dist, int bot_dist)
-{
-	int		i;
-	int		size;
-	t_op	op;
-
-	size = get_stack_size(stat->stack_a);
-	i = 0;
-	if (top_dist <= size - bot_dist)
-	{
-		while (i++ < top_dist)
-		{
-			op = OP_RA;
-			if (rotate_stack(stat->stack_a, &op))
-				store_op(stat->op_buffer, op);
-		}
-	}
-	else
-	{
-		while (i++ < size - bot_dist)
-		{
-			op = OP_RRA;
-			if (rrotate_stack(stat->stack_a, &op))
-				store_op(stat->op_buffer, op);
-		}
-	}
-}
-
-static void	do_divide(t_push_swap_stat *stat, t_divide *div)
-{
-	int		cur;
-	t_op	op;
-
-	while (1)
-	{
-		find_dists(stat, div);
-		if (div->top_dist == -1)
-			break ;
-		move_to_top(stat, div->top_dist, div->bot_dist);
-		get_stack_top(stat->stack_a, &cur);
-		cur = get_rank(stat->sorted, div->total_n, cur) / div->chunk_size;
-		if (cur >= div->total_chunks)
-			cur = div->total_chunks - 1;
-		op = OP_PB;
-		if (push_stack(stat->stack_a, stat->stack_b, &op))
-			store_op(stat->op_buffer, op);
-		if (div->step > 0 && cur == div->mid - div->step)
-		{
-			op = OP_RB;
-			if (rotate_stack(stat->stack_b, &op))
-				store_op(stat->op_buffer, op);
-		}
-	}
-}
+static void	update_match(t_push_swap_stat *stat, t_match *m,
+				int c1, int c2);
+static int	find_best_rotation_for_pair(t_push_swap_stat *stat,
+				int chunk_idx1, int chunk_idx2, int *rot);
+static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
+				int small_chunk);
+static void	rotate_a_n(t_push_swap_stat *stat, int rot);
 
 void	divide_by_chunks(t_push_swap_stat *stat, int chunk_size,
 			int total_chunks)
 {
-	t_divide	div;
-	t_op		op;
+	int	num_chunks;
+	int	i;
 
-	div.chunk_size = chunk_size;
-	div.total_chunks = total_chunks;
-	div.total_n = get_stack_size(stat->stack_a);
-	div.mid = total_chunks / 2;
-	div.step = 0;
-	div.max_step = total_chunks - div.mid;
-	if (total_chunks % 2 == 0)
-		div.max_step = total_chunks / 2 - 1;
-	while (div.step <= div.max_step)
+	(void)chunk_size;
+	(void)total_chunks;
+	num_chunks = get_num_chunks(get_stack_size(stat->stack_a));
+	i = 0;
+	while (i < num_chunks)
 	{
-		do_divide(stat, &div);
-		div.step++;
+		if (i + 1 < num_chunks)
+			push_pair_to_b(stat, i + 1, i);
+		else
+			push_pair_to_b(stat, i, -1);
+		i += 2;
 	}
-	while (get_stack_size(stat->stack_a) > 3)
+}
+
+static void	update_match(t_push_swap_stat *stat, t_match *m,
+				int c1, int c2)
+{
+	int	rank;
+
+	rank = get_rank(stat->sorted, m->n, stat->stack_a->datas[m->cur]);
+	if (is_in_chunk(stat, rank, c1)
+		|| (c2 != -1 && is_in_chunk(stat, rank, c2)))
 	{
-		div.top_dist = 0;
-		div.bot_dist = get_stack_size(stat->stack_a) - 1;
-		move_to_top(stat, div.top_dist, div.bot_dist);
+		if (m->first == -1)
+			m->first = m->i;
+		m->last = m->i;
+	}
+}
+
+static int	find_best_rotation_for_pair(t_push_swap_stat *stat,
+				int chunk_idx1, int chunk_idx2, int *rot)
+{
+	t_match	m;
+
+	m.size = get_stack_size(stat->stack_a);
+	if (m.size == 0)
+		return (0);
+	m.first = -1;
+	m.last = -1;
+	m.cur = stat->stack_a->top_index;
+	m.i = 0;
+	m.n = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
+	while (m.i < m.size)
+	{
+		update_match(stat, &m, chunk_idx1, chunk_idx2);
+		m.cur = prev_idx(stat->stack_a, m.cur);
+		m.i++;
+	}
+	if (m.first == -1)
+		return (0);
+	*rot = m.first;
+	if (m.first > m.size - m.last)
+		*rot = -(m.size - m.last);
+	return (1);
+}
+
+static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
+				int small_chunk)
+{
+	int		rot;
+	int		i;
+	int		val;
+	t_op	op;
+
+	while (find_best_rotation_for_pair(stat, large_chunk, small_chunk, &rot))
+	{
+		rotate_a_n(stat, rot);
+		get_stack_top(stat->stack_a, &val);
+		i = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
 		op = OP_PB;
-		if (push_stack(stat->stack_a, stat->stack_b, &op))
+		push_stack(stat->stack_a, stat->stack_b, &op);
+		store_op(stat->op_buffer, op);
+		if (!is_in_chunk(stat, get_rank(stat->sorted, i, val), large_chunk)
+			&& small_chunk != -1)
+		{
+			op = OP_RB;
+			rotate_stack(stat->stack_b, &op);
 			store_op(stat->op_buffer, op);
+		}
+	}
+}
+
+static void	rotate_a_n(t_push_swap_stat *stat, int rot)
+{
+	int		i;
+	t_op	op;
+
+	i = 0;
+	if (rot > 0)
+	{
+		while (i < rot)
+		{
+			op = OP_RA;
+			rotate_stack(stat->stack_a, &op);
+			store_op(stat->op_buffer, op);
+			i++;
+		}
+	}
+	else
+	{
+		while (i < -rot)
+		{
+			op = OP_RRA;
+			rrotate_stack(stat->stack_a, &op);
+			store_op(stat->op_buffer, op);
+			i++;
+		}
 	}
 }

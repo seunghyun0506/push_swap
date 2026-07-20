@@ -19,29 +19,34 @@
 
 int			parse_stack(t_push_swap_stat *stat);
 void		sort(t_push_swap_stat *stat);
+static int	add_node(t_list **lst, int num);
 static int	parse_integers(t_list **lst, const char *str);
 static void	list_to_stack(t_push_swap_stat *stat, t_list **lst, int node_cnt);
 
 void	sort(t_push_swap_stat *stat)
 {
-	int	n;
-
-	n = get_stack_size(stat->stack_a);
+	stat->initial_disorder = compute_disorder(stat->stack_a);
 	if (stat->option == 1)
-		simple_sort(stat);
+		stat->selected_strategy = 1;
 	else if (stat->option == 2)
-		medium_sort(stat);
+		stat->selected_strategy = 2;
 	else if (stat->option == 3)
-		complex_sort(stat);
+		stat->selected_strategy = 3;
 	else
 	{
-		if (n <= 5)
-			simple_sort(stat);
-		else if (n <= 100)
-			medium_sort(stat);
+		if (stat->initial_disorder < 0.2)
+			stat->selected_strategy = 1;
+		else if (stat->initial_disorder < 0.5)
+			stat->selected_strategy = 2;
 		else
-			complex_sort(stat);
+			stat->selected_strategy = 3;
 	}
+	if (stat->selected_strategy == 1)
+		simple_sort(stat);
+	else if (stat->selected_strategy == 2)
+		medium_sort(stat);
+	else if (stat->selected_strategy == 3)
+		complex_sort(stat);
 }
 
 int	parse_stack(t_push_swap_stat *stat)
@@ -101,6 +106,8 @@ static int	parse_integers(t_list **lst, const char *str)
 	{
 		while (ft_isspace(*str))
 			str++;
+		if (*str == '\0')
+			break ;
 		num = ft_strtoi(str, &pos);
 		if (str == pos || (*pos != '\0' && !ft_isspace(*pos)))
 			return (ft_lstclear(lst, free), -1);
@@ -109,6 +116,8 @@ static int	parse_integers(t_list **lst, const char *str)
 		cnt++;
 		str = pos;
 	}
+	if (cnt == 0)
+		return (-1);
 	return (cnt);
 }
 

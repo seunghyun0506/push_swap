@@ -6,14 +6,60 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 12:42:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/20 15:45:02 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/21 07:17:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap_sort.h"
 #include "ft_stack_internal.h"
 
-static void	align_helper(t_push_swap_stat *stat, int min_idx, int size)
+void		align_stack_a(t_push_swap_stat *stat);
+void		align_a(t_push_swap_stat *stat);
+static int	find_min_val_idx(t_stack *a, int size);
+static void	rotate_to_top(t_push_swap_stat *stat, int min_idx, int size);
+
+void	align_stack_a(t_push_swap_stat *stat)
+{
+	int	size;
+	int	min_idx;
+
+	size = get_stack_size(stat->stack_a);
+	if (size <= 1)
+		return ;
+	min_idx = find_min_val_idx(stat->stack_a, size);
+	rotate_to_top(stat, min_idx, size);
+}
+
+void	align_a(t_push_swap_stat *stat)
+{
+	align_stack_a(stat);
+}
+
+static int	find_min_val_idx(t_stack *a, int size)
+{
+	int	min_val;
+	int	min_idx;
+	int	cur_idx;
+	int	i;
+
+	cur_idx = a->top_index;
+	min_val = a->datas[cur_idx];
+	min_idx = 0;
+	i = 0;
+	while (i < size)
+	{
+		if (a->datas[cur_idx] < min_val)
+		{
+			min_val = a->datas[cur_idx];
+			min_idx = i;
+		}
+		cur_idx = prev_idx(a, cur_idx);
+		i++;
+	}
+	return (min_idx);
+}
+
+static void	rotate_to_top(t_push_swap_stat *stat, int min_idx, int size)
 {
 	int		i;
 	t_op	op;
@@ -37,37 +83,4 @@ static void	align_helper(t_push_swap_stat *stat, int min_idx, int size)
 				store_op(stat->op_buffer, op);
 		}
 	}
-}
-
-void	align_stack_a(t_push_swap_stat *stat)
-{
-	int	size;
-	int	min_val;
-	int	min_idx;
-	int	cur_idx;
-	int	i;
-
-	size = get_stack_size(stat->stack_a);
-	if (size <= 1)
-		return ;
-	cur_idx = stat->stack_a->top_index;
-	min_val = stat->stack_a->datas[cur_idx];
-	min_idx = 0;
-	i = 0;
-	while (i < size)
-	{
-		if (stat->stack_a->datas[cur_idx] < min_val)
-		{
-			min_val = stat->stack_a->datas[cur_idx];
-			min_idx = i;
-		}
-		cur_idx = prev_idx(stat->stack_a, cur_idx);
-		i++;
-	}
-	align_helper(stat, min_idx, size);
-}
-
-void	align_a(t_push_swap_stat *stat)
-{
-	align_stack_a(stat);
 }

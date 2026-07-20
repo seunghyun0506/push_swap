@@ -27,6 +27,8 @@ typedef struct s_push_swap_stat
 	t_stack		*stack_b;
 	int			*sorted;
 	t_op_buffer	*op_buffer;
+	double		initial_disorder;
+	int			selected_strategy;
 }	t_push_swap_stat;
 
 void	init_push_swap_stat(t_push_swap_stat *stat, int argc, char **argv);

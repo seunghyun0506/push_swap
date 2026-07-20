@@ -14,17 +14,7 @@
 #include "ft_stack_internal.h"
 #include "push_swap_sort.h"
 
-static void	push_twice(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
-{
-	t_op	op;
-
-	op = OP_PA;
-	push_stack(s2, s1, &op);
-	store_op(stat->op_buffer, op);
-	op = OP_PA;
-	push_stack(s2, s1, &op);
-	store_op(stat->op_buffer, op);
-}
+static void	push_twice(t_push_swap_stat *stat, t_stack *s1, t_stack *s2);
 
 int	small_sort(t_push_swap_stat *stat, t_stack *s1, t_stack *s2, int size)
 {
@@ -75,4 +65,16 @@ int	small_sort_helper(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 	if (size == 3)
 		return (three_sort_desc(stat, s1, s2), 1);
 	return (0);
+}
+
+static void	push_twice(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
+{
+	t_op	op;
+
+	op = OP_PA;
+	push_stack(s2, s1, &op);
+	store_op(stat->op_buffer, op);
+	op = OP_PA;
+	push_stack(s2, s1, &op);
+	store_op(stat->op_buffer, op);
 }

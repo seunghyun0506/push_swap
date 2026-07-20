@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 16:02:29 by slim              #+#    #+#             */
-/*   Updated: 2026/07/13 19:45:23 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/21 06:34:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,46 @@
 #include "ft_stack_internal.h"
 #include "push_swap_sort.h"
 
-static void	op_push(t_push_swap_stat *stat, t_stack *from, t_stack *to,
-				t_op op_type)
+static void	op_swap(t_push_swap_stat *stat, t_stack *s, t_op op_type);
+static void	op_rotate_s(t_push_swap_stat *stat, t_stack *s, t_op op_type);
+static void	three_sort_asc_dispatch(t_push_swap_stat *stat, t_stack *s1);
+
+void	three_sort_asc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
 {
+	int	t;
+	int	m;
+	int	b;
+
+	(void)s2;
+	if (get_stack_size(s1) < 3)
+		return ;
+	t = s1->datas[s1->top_index];
+	m = s1->datas[prev_idx(s1, s1->top_index)];
+	b = s1->datas[prev_idx(s1, prev_idx(s1, s1->top_index))];
+	if (t < m && m < b)
+		return ;
+	three_sort_asc_dispatch(stat, s1);
+}
+
+void	three_sort_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
+{
+	int		i;
 	t_op	op;
 
-	op = op_type;
-	push_stack(from, to, &op);
-	store_op(stat->op_buffer, op);
+	if (get_stack_size(s2) < 3)
+		return ;
+	i = 0;
+	while (i < 3)
+	{
+		if (get_stack_size(s2) >= 2 && s2->datas[s2->top_index]
+			< s2->datas[prev_idx(s2, s2->top_index)])
+			op_swap(stat, s2, OP_SB);
+		op = OP_PA;
+		push_stack(s2, s1, &op);
+		store_op(stat->op_buffer, op);
+		i++;
+	}
+	three_sort_asc(stat, s1, s2);
 }
 
 static void	op_swap(t_push_swap_stat *stat, t_stack *s, t_op op_type)
@@ -33,69 +65,41 @@ static void	op_swap(t_push_swap_stat *stat, t_stack *s, t_op op_type)
 	store_op(stat->op_buffer, op);
 }
 
-static void	three_sort_asc_cases(t_push_swap_stat *stat, t_stack *s1,
-				t_stack *s2, int case_id)
+static void	op_rotate_s(t_push_swap_stat *stat, t_stack *s, t_op op_type)
 {
-	if (case_id == 1 || case_id == 3)
-	{
-		op_push(stat, s1, s2, OP_PB);
-		op_swap(stat, s1, OP_SA);
-		op_push(stat, s2, s1, OP_PA);
-		if (case_id == 3)
-			op_swap(stat, s1, OP_SA);
-	}
-	else if (case_id == 2)
-		op_swap(stat, s1, OP_SA);
+	t_op	op;
+
+	op = op_type;
+	if (op == OP_RA || op == OP_RB)
+		rotate_stack(s, &op);
 	else
-	{
-		op_swap(stat, s1, OP_SA);
-		op_push(stat, s1, s2, OP_PB);
-		op_swap(stat, s1, OP_SA);
-		op_push(stat, s2, s1, OP_PA);
-		if (case_id == 5)
-			op_swap(stat, s1, OP_SA);
-	}
+		rrotate_stack(s, &op);
+	store_op(stat->op_buffer, op);
 }
 
-void	three_sort_asc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
+static void	three_sort_asc_dispatch(t_push_swap_stat *stat, t_stack *s1)
 {
-	int	top;
-	int	mid;
-	int	bot;
+	int	t;
+	int	m;
+	int	b;
 
-	if (get_stack_size(s1) < 3)
-		return ;
-	top = s1->datas[s1->top_index];
-	mid = s1->datas[prev_idx(s1, s1->top_index)];
-	bot = s1->datas[prev_idx(s1, prev_idx(s1, s1->top_index))];
-	if (top < mid && mid < bot)
-		return ;
-	if (top < bot && bot < mid)
-		three_sort_asc_cases(stat, s1, s2, 1);
-	else if (mid < top && top < bot)
-		three_sort_asc_cases(stat, s1, s2, 2);
-	else if (bot < top && top < mid)
-		three_sort_asc_cases(stat, s1, s2, 3);
-	else if (mid < bot && bot < top)
-		three_sort_asc_cases(stat, s1, s2, 4);
-	else if (bot < mid && mid < top)
-		three_sort_asc_cases(stat, s1, s2, 5);
-}
-
-void	three_sort_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
-{
-	int	i;
-
-	if (get_stack_size(s2) < 3)
-		return ;
-	i = 0;
-	while (i < 3)
+	t = s1->datas[s1->top_index];
+	m = s1->datas[prev_idx(s1, s1->top_index)];
+	b = s1->datas[prev_idx(s1, prev_idx(s1, s1->top_index))];
+	if (t < b && b < m)
 	{
-		if (get_stack_size(s2) >= 2 && s2->datas[s2->top_index]
-			< s2->datas[prev_idx(s2, s2->top_index)])
-			op_swap(stat, s2, OP_SB);
-		op_push(stat, s2, s1, OP_PA);
-		i++;
+		op_swap(stat, s1, OP_SA);
+		op_rotate_s(stat, s1, OP_RA);
 	}
-	three_sort_asc(stat, s1, s2);
+	else if (m < t && t < b)
+		op_swap(stat, s1, OP_SA);
+	else if (b < t && t < m)
+		op_rotate_s(stat, s1, OP_RA);
+	else if (m < b && b < t)
+		op_rotate_s(stat, s1, OP_RRA);
+	else if (b < m && m < t)
+	{
+		op_swap(stat, s1, OP_SA);
+		op_rotate_s(stat, s1, OP_RRA);
+	}
 }
