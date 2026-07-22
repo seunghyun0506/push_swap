@@ -160,25 +160,28 @@ void divide_by_chunks(t_push_swap_stat *stat)
 ```
 
 B는 처음에 비어 있으므로 A의 전체 크기로 chunk 개수를 계산한다.
-chunk를 두 개씩 묶어 처리한다.
+그 다음 중앙의 두 chunk에서 시작해 양쪽 끝으로 확장하며 처리한다.
+
+7개 chunk가 있다면 다음 순서다.
 
 ```text
-i = 0
-large chunk = 1, small chunk = 0
-
-i = 2
-large chunk = 3, small chunk = 2
-
-i = 4
-large chunk = 5, small chunk = 4
+(2, 3)
+(1, 4)
+(0, 5)
+(6)
 ```
 
-chunk 개수가 홀수라 마지막 chunk만 남으면 다음처럼 처리한다.
+코드에서는 각 pair를 `inner_chunk`, `outer_chunk`로 전달한다.
 
 ```text
-large chunk = 마지막 chunk
-small chunk = -1
+inner chunk = 2, outer chunk = 3
+inner chunk = 1, outer chunk = 4
+inner chunk = 0, outer chunk = 5
+마지막 chunk = 6
 ```
+
+chunk 개수가 홀수이면 중앙에서 확장한 뒤 마지막 chunk 하나가 남는다.
+이 경우 마지막 chunk는 pair가 아니므로 `outer_chunk`를 `-1`로 전달한다.
 
 각 chunk 쌍의 실제 이동은 `push_pair_to_b()`가 담당한다.
 
@@ -244,7 +247,7 @@ if (first > size - last)
 1. A에서 대상 원소를 top으로 회전
 2. top 값을 확인
 3. pb로 A에서 B로 이동
-4. small chunk 원소라면 B를 rb
+4. inner chunk 원소라면 B를 rb
 ```
 
 의사 코드:
@@ -254,23 +257,91 @@ while 대상 chunk 원소가 A에 남아 있음:
     A를 대상 원소까지 회전
     val = A의 top
     pb
-    if val이 large chunk가 아니고 small chunk가 존재하면:
+    if val이 outer chunk가 아니고 outer chunk가 존재하면:
         rb
 ```
 
-### B에서 small chunk를 회전시키는 이유
+### B에서 inner chunk를 회전시키는 이유
 
-large chunk와 small chunk를 같은 방식으로 B에 쌓으면 두 그룹의 위치가 섞인다.
-small chunk 원소를 `rb`로 한 번 더 회전시키면 B 안에서 두 그룹을 어느 정도 분리할 수 있다.
+inner chunk와 outer chunk를 같은 방식으로 B에 쌓으면 두 그룹의 위치가 섞인다.
+inner chunk 원소를 `rb`로 한 번 더 회전시키면 B 안에서 두 그룹을 어느 정도 분리할 수 있다.
 
 개념적으로는 다음과 같다.
 
 ```text
-large chunk 원소 → B의 top 쪽
-small chunk 원소 → rb로 뒤쪽으로 이동
+outer chunk 원소 → B의 top 쪽
+inner chunk 원소 → rb로 뒤쪽으로 이동
 ```
 
 이후 반환 단계에서 chunk별 최댓값을 찾기 쉬워진다.
+
+### B의 실제 chunk 배치
+
+스택 표기는 항상 `top → bottom` 순서로 작성한다.
+`pb`는 새 원소를 B의 top에 넣고, `rb`는 B의 top 원소를 bottom으로 보낸다.
+
+7개 chunk가 있고 각 chunk에서 대표 원소 하나만 이동한다고 가정하면 다음과 같다.
+
+#### 1단계: `(2, 3)`
+
+```text
+pb chunk 2: [2]
+rb chunk 2: [2]       // 원소가 하나라 위치 변화 없음
+pb chunk 3: [3, 2]
+```
+
+#### 2단계: `(1, 4)`
+
+```text
+pb chunk 1: [1, 3, 2]
+rb chunk 1: [3, 2, 1]
+pb chunk 4: [4, 3, 2, 1]
+```
+
+#### 3단계: `(0, 5)`
+
+```text
+pb chunk 0: [0, 4, 3, 2, 1]
+rb chunk 0: [4, 3, 2, 1, 0]
+pb chunk 5: [5, 4, 3, 2, 1, 0]
+```
+
+#### 4단계: 마지막 chunk `6`
+
+마지막 chunk는 pair가 아니므로 `outer_chunk == -1`이고 `rb`를 실행하지 않는다.
+
+```text
+pb chunk 6: [6, 5, 4, 3, 2, 1, 0]
+```
+
+따라서 최종적인 chunk 배치는 다음과 같다.
+
+```text
+B top
+  chunk 6
+  chunk 5
+  chunk 4
+  chunk 3
+  chunk 2
+  chunk 1
+  chunk 0
+B bottom
+```
+
+실제 입력에서는 각 chunk에 여러 값이 있으므로 chunk 내부의 개별 값까지 정렬되는 것은 아니다.
+중요한 것은 낮은 번호의 inner chunk가 `rb`에 의해 B의 bottom 쪽으로 이동하고, 높은 번호의 outer chunk가 top 쪽에 남는다는 점이다.
+
+이 배치는 다음 반환 순서와 연결된다.
+
+```text
+B에서 chunk 6의 최댓값부터 pa
+→ chunk 5의 최댓값
+→ chunk 4의 최댓값
+→ ...
+→ chunk 0의 최댓값
+```
+
+`find_max_chunk_idx()`는 B 전체를 순회하므로 chunk가 완벽하게 연속으로 모여 있지 않아도 동작하지만, 위와 같은 배치는 불필요한 B 회전을 줄이는 데 목적이 있다.
 
 ---
 
@@ -373,11 +444,11 @@ floor(sqrt(10)) = 3
 num_chunks = 4
 ```
 
-`divide_by_chunks()`는 다음 순서로 chunk 쌍을 처리한다.
+`divide_by_chunks()`는 중앙에서 바깥쪽으로 다음 순서로 chunk를 처리한다.
 
 ```text
-1번 + 0번 chunk
-3번 + 2번 chunk
+1번 + 2번 chunk
+0번 + 3번 chunk
 ```
 
 각 쌍에 대해:
@@ -447,7 +518,7 @@ sa + sb  → ss
 2. rank 범위를 여러 chunk로 나눈다.
 3. A에서 현재 chunk 원소를 짧은 방향으로 회전한다.
 4. pb로 B에 보낸다.
-5. small chunk 원소는 rb로 그룹을 분리한다.
+5. inner chunk 원소는 rb로 그룹을 분리한다.
 6. A에 남은 원소를 small_sort한다.
 7. B에서 큰 chunk부터 최댓값을 찾아 pa한다.
 8. A에는 오름차순, B에는 아무 원소도 남지 않게 한다.

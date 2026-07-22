@@ -27,25 +27,31 @@ static void	update_match(t_push_swap_stat *stat, t_match *match,
 				int chunk_idx1, int chunk_idx2);
 static int	find_best_rotation_for_pair(t_push_swap_stat *stat,
 				int chunk_idx1, int chunk_idx2, int *rot);
-static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
-				int small_chunk);
+static void	push_pair_to_b(t_push_swap_stat *stat, int inner_chunk,
+				int outer_chunk);
 static void	rotate_a_n(t_push_swap_stat *stat, int rot);
 
+/*
+** Process chunk pairs from the center toward both ends.
+** Seven chunks become (2, 3), (1, 4), (0, 5), then (6).
+*/
 void	divide_by_chunks(t_push_swap_stat *stat)
 {
 	int	num_chunks;
-	int	i;
+	int	left_chunk;
+	int	right_chunk;
 
 	num_chunks = get_num_chunks(get_stack_size(stat->stack_a));
-	i = 0;
-	while (i < num_chunks)
+	left_chunk = num_chunks / 2 - 1;
+	right_chunk = left_chunk + 1;
+	while (left_chunk >= 0)
 	{
-		if (i + 1 < num_chunks)
-			push_pair_to_b(stat, i + 1, i);
-		else
-			push_pair_to_b(stat, i, -1);
-		i += 2;
+		push_pair_to_b(stat, left_chunk, right_chunk);
+		left_chunk--;
+		right_chunk++;
 	}
+	if (right_chunk < num_chunks)
+		push_pair_to_b(stat, right_chunk, -1);
 }
 
 static void	update_match(t_push_swap_stat *stat, t_match *match,
@@ -92,15 +98,15 @@ static int	find_best_rotation_for_pair(t_push_swap_stat *stat,
 	return (1);
 }
 
-static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
-				int small_chunk)
+static void	push_pair_to_b(t_push_swap_stat *stat, int inner_chunk,
+				int outer_chunk)
 {
 	int		rot;
 	int		total_size;
 	int		val;
 	t_op	op;
 
-	while (find_best_rotation_for_pair(stat, large_chunk, small_chunk, &rot))
+	while (find_best_rotation_for_pair(stat, inner_chunk, outer_chunk, &rot))
 	{
 		rotate_a_n(stat, rot);
 		get_stack_top(stat->stack_a, &val);
@@ -109,9 +115,9 @@ static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
 		op = OP_PB;
 		push_stack(stat->stack_a, stat->stack_b, &op);
 		store_op(stat->op_buffer, op);
-		if (!is_in_chunk(stat,
-				get_rank(stat->sorted, total_size, val), large_chunk)
-			&& small_chunk != -1)
+		if (outer_chunk != -1
+			&& !is_in_chunk(stat,
+				get_rank(stat->sorted, total_size, val), outer_chunk))
 		{
 			op = OP_RB;
 			rotate_stack(stat->stack_b, &op);
