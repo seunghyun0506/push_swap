@@ -6,12 +6,11 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 05:22:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/21 05:22:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/22 08:34:42 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-#include "push_swap_sort.h"
 #include "libft.h"
 #include <unistd.h>
 

@@ -1,45 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   checker_util.c                                     :+:      :+:    :+:   */
+/*   stack_rotate.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/21 06:58:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/21 06:58:00 by slim             ###   ########.fr       */
+/*   Created: 2026/07/03 20:47:17 by slim              #+#    #+#             */
+/*   Updated: 2026/07/06 11:33:12 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_stack.h"
 #include "ft_stack_internal.h"
-#include "push_swap_stat.h"
-#include <stdlib.h>
 
-void	free_resources(t_push_swap_stat *stat)
+int	rotate_stack(t_stack *s, t_op *op)
 {
-	free_op_buffer(stat->op_buffer);
-	destroy_stack(stat->stack_a);
-	destroy_stack(stat->stack_b);
-	free(stat->sorted);
+	if (get_stack_size(s) <= 1)
+	{
+		if (op)
+			*op = OP_NONE;
+		return (0);
+	}
+	s->datas[s->bottom_index] = s->datas[s->top_index];
+	s->top_index = prev_idx(s, s->top_index);
+	s->bottom_index = prev_idx(s, s->bottom_index);
+	return (1);
 }
 
-int	is_sorted(t_stack *s)
+int	rotate_stacks(t_stack *s1, t_stack *s2, t_op *op)
 {
-	int	cur;
-	int	i;
-	int	size;
-
-	size = get_stack_size(s);
-	if (size <= 1)
-		return (1);
-	cur = s->top_index;
-	i = 0;
-	while (i < size - 1)
+	if (get_stack_size(s1) <= 1 || get_stack_size(s2) <= 1)
 	{
-		if (s->datas[cur] > s->datas[prev_idx(s, cur)])
-			return (0);
-		cur = prev_idx(s, cur);
-		i++;
+		if (op)
+			*op = OP_NONE;
+		return (0);
 	}
+	rotate_stack(s1, 0);
+	rotate_stack(s2, 0);
 	return (1);
 }
