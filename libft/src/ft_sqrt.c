@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 23:53:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/20 15:10:09 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/22 17:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ double	ft_sqrt(double a)
 	double	mid;
 	double	diff;
 
-	if (a < 0)
+	if (a <= 0)
 		return (0.0);
-	if (a == 0.0 || a == 1.0)
-		return (a);
 	low = 0.0;
 	high = a;
 	if (a < 1.0)
@@ -40,5 +38,5 @@ double	ft_sqrt(double a)
 		else
 			low = mid;
 	}
-	return (mid);
+	return (mid + 0.00001);
 }
