@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_stack.h"
-#include "ft_stack_internal.h"
+#include "ft_stack_bonus.h"
+#include "ft_stack_internal_bonus.h"
 #include "push_swap_stat.h"
 #include "push_swap.h"
+#include "merge_sort.h"
 #include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>
@@ -30,8 +31,9 @@ int	main(int argc, char **argv)
 	if (argc <= 1)
 		return (0);
 	init_push_swap_stat(&stat, argc, argv);
-	if (!parse_stack(&stat))
-		return (write(2, "Error\n", 6), 1);
+	if (!stat.op_buffer || !parse_stack(&stat)
+		|| !merge_sort(stat.sorted, get_stack_size(stat.stack_a)))
+		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	if (!check_duplicate(&stat))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	if (!run_instructions(&stat))

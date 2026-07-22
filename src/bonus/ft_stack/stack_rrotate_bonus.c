@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_stack.h"
-#include "ft_stack_internal.h"
+#include "ft_stack_bonus.h"
+#include "ft_stack_internal_bonus.h"
 
 int	rrotate_stack(t_stack *s, t_op *op)
 {

@@ -12,7 +12,6 @@
 
 #include "push_swap.h"
 #include "libft.h"
-#include "merge_sort.h"
 #include "push_swap_sort.h"
 #include <complex.h>
 #include <stdlib.h>
@@ -41,6 +40,8 @@ void	sort(t_push_swap_stat *stat)
 		else
 			stat->selected_strategy = 3;
 	}
+	if (stat->initial_disorder == 0.0)
+		return ;
 	if (stat->selected_strategy == 1)
 		simple_sort(stat);
 	else if (stat->selected_strategy == 2)
@@ -69,10 +70,11 @@ int	parse_stack(t_push_swap_stat *stat)
 	stat->stack_b = init_stack(cnt);
 	stat->sorted = (int *)malloc(sizeof(int) * cnt);
 	if (!stat->stack_a || !stat->stack_b || !stat->sorted)
-		return (ft_lstclear(&list, free), free(stat->sorted),
-			free(stat->stack_a), free(stat->stack_b), 0);
+	{
+		ft_lstclear(&list, free);
+		return (0);
+	}
 	list_to_stack(stat, &list, cnt);
-	merge_sort(stat->sorted, cnt);
 	return (1);
 }
 
@@ -99,6 +101,7 @@ static int	parse_integers(t_list **lst, const char *str)
 {
 	int			num;
 	int			cnt;
+	int			err;
 	const char	*pos;
 
 	cnt = 0;
@@ -108,8 +111,8 @@ static int	parse_integers(t_list **lst, const char *str)
 			str++;
 		if (*str == '\0')
 			break ;
-		num = ft_strtoi(str, &pos);
-		if (str == pos || (*pos != '\0' && !ft_isspace(*pos)))
+		num = str_to_int(str, &pos, &err);
+		if (err || (*pos != '\0' && !ft_isspace(*pos)))
 			return (ft_lstclear(lst, free), -1);
 		if (!add_node(lst, num))
 			return (ft_lstclear(lst, free), -1);

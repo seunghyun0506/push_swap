@@ -11,15 +11,14 @@
 /* ************************************************************************** */
 
 #include "ft_stack.h"
-#include "ft_stack_internal.h"
 #include "push_swap_stat.h"
 #include "push_swap.h"
+#include "merge_sort.h"
 #include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>
 
 static void	free_resources(t_push_swap_stat *stat);
-static int	is_sorted(t_stack *s);
 void		print_op_buffer(t_op_buffer *buffer);
 
 int	main(int argc, char **argv)
@@ -29,12 +28,15 @@ int	main(int argc, char **argv)
 	if (argc <= 1)
 		return (0);
 	init_push_swap_stat(&stat, argc, argv);
-	if (!parse_flag(&stat) || !parse_stack(&stat))
-		return (write(2, "Error\n", 6), 1);
+	if (!stat.op_buffer || !parse_flag(&stat))
+		return (free_resources(&stat), write(2, "Error\n", 6), 1);
+	if (stat.i >= stat.argc)
+		return (free_resources(&stat), 0);
+	if (!parse_stack(&stat)
+		|| !merge_sort(stat.sorted, get_stack_size(stat.stack_a)))
+		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	if (!check_duplicate(&stat))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);
-	if (is_sorted(stat.stack_a))
-		return (free_resources(&stat), 0);
 	sort(&stat);
 	print_op_buffer(stat.op_buffer);
 	if (stat.bench)
@@ -72,29 +74,16 @@ void	print_op_buffer(t_op_buffer *buffer)
 
 static void	free_resources(t_push_swap_stat *stat)
 {
+	if (!stat)
+		return ;
 	free_op_buffer(stat->op_buffer);
-	destroy_stack(stat->stack_a);
-	destroy_stack(stat->stack_b);
+	stat->op_buffer = NULL;
+	if (stat->stack_a)
+		destroy_stack(stat->stack_a);
+	stat->stack_a = NULL;
+	if (stat->stack_b)
+		destroy_stack(stat->stack_b);
+	stat->stack_b = NULL;
 	free(stat->sorted);
-}
-
-static int	is_sorted(t_stack *s)
-{
-	int	cur;
-	int	i;
-	int	size;
-
-	size = get_stack_size(s);
-	if (size <= 1)
-		return (1);
-	cur = s->top_index;
-	i = 0;
-	while (i < size - 1)
-	{
-		if (s->datas[cur] > s->datas[prev_idx(s, cur)])
-			return (0);
-		cur = prev_idx(s, cur);
-		i++;
-	}
-	return (1);
+	stat->sorted = NULL;
 }

@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   merge_sort.h                                       :+:      :+:    :+:   */
+/*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
+/*   By: jaeclee <jaeclee@student.42gyeongsan.kr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/17 21:18:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/17 21:18:00 by slim             ###   ########.fr       */
+/*   Created: 2026/07/21 07:51:53 by jaeclee           #+#    #+#             */
+/*   Updated: 2026/07/21 07:53:35 by jaeclee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#ifndef MERGE_SORT_H
-# define MERGE_SORT_H
-
-int	merge_sort(int *arr, int size);
-
-#endif
+int	ft_abs(int num)
+{
+	if (num < 0)
+		num = -num;
+	return (num);
+}

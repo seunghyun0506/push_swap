@@ -13,22 +13,29 @@
 #include "push_swap_sort.h"
 #include "ft_stack_internal.h"
 
-static void	update_match(t_push_swap_stat *stat, t_match *m,
-				int c1, int c2);
+typedef struct s_match
+{
+	int	first;
+	int	last;
+	int	cur;
+	int	i;
+	int	size;
+	int	n;
+}	t_match;
+
+static void	update_match(t_push_swap_stat *stat, t_match *match,
+				int chunk_idx1, int chunk_idx2);
 static int	find_best_rotation_for_pair(t_push_swap_stat *stat,
 				int chunk_idx1, int chunk_idx2, int *rot);
 static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
 				int small_chunk);
 static void	rotate_a_n(t_push_swap_stat *stat, int rot);
 
-void	divide_by_chunks(t_push_swap_stat *stat, int chunk_size,
-			int total_chunks)
+void	divide_by_chunks(t_push_swap_stat *stat)
 {
 	int	num_chunks;
 	int	i;
 
-	(void)chunk_size;
-	(void)total_chunks;
 	num_chunks = get_num_chunks(get_stack_size(stat->stack_a));
 	i = 0;
 	while (i < num_chunks)
@@ -41,45 +48,47 @@ void	divide_by_chunks(t_push_swap_stat *stat, int chunk_size,
 	}
 }
 
-static void	update_match(t_push_swap_stat *stat, t_match *m,
-				int c1, int c2)
+static void	update_match(t_push_swap_stat *stat, t_match *match,
+				int chunk_idx1, int chunk_idx2)
 {
 	int	rank;
 
-	rank = get_rank(stat->sorted, m->n, stat->stack_a->datas[m->cur]);
-	if (is_in_chunk(stat, rank, c1)
-		|| (c2 != -1 && is_in_chunk(stat, rank, c2)))
+	rank = get_rank(stat->sorted, match->n,
+			stat->stack_a->datas[match->cur]);
+	if (is_in_chunk(stat, rank, chunk_idx1)
+		|| (chunk_idx2 != -1 && is_in_chunk(stat, rank, chunk_idx2)))
 	{
-		if (m->first == -1)
-			m->first = m->i;
-		m->last = m->i;
+		if (match->first == -1)
+			match->first = match->i;
+		match->last = match->i;
 	}
 }
 
 static int	find_best_rotation_for_pair(t_push_swap_stat *stat,
 				int chunk_idx1, int chunk_idx2, int *rot)
 {
-	t_match	m;
+	t_match	match;
 
-	m.size = get_stack_size(stat->stack_a);
-	if (m.size == 0)
+	match.size = get_stack_size(stat->stack_a);
+	if (match.size == 0)
 		return (0);
-	m.first = -1;
-	m.last = -1;
-	m.cur = stat->stack_a->top_index;
-	m.i = 0;
-	m.n = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
-	while (m.i < m.size)
+	match.first = -1;
+	match.last = -1;
+	match.cur = stat->stack_a->top_index;
+	match.i = 0;
+	match.n = get_stack_size(stat->stack_a)
+		+ get_stack_size(stat->stack_b);
+	while (match.i < match.size)
 	{
-		update_match(stat, &m, chunk_idx1, chunk_idx2);
-		m.cur = prev_idx(stat->stack_a, m.cur);
-		m.i++;
+		update_match(stat, &match, chunk_idx1, chunk_idx2);
+		match.cur = prev_idx(stat->stack_a, match.cur);
+		match.i++;
 	}
-	if (m.first == -1)
+	if (match.first == -1)
 		return (0);
-	*rot = m.first;
-	if (m.first > m.size - m.last)
-		*rot = -(m.size - m.last);
+	*rot = match.first;
+	if (match.first > match.size - match.last)
+		*rot = -(match.size - match.last);
 	return (1);
 }
 
@@ -87,7 +96,7 @@ static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
 				int small_chunk)
 {
 	int		rot;
-	int		i;
+	int		total_size;
 	int		val;
 	t_op	op;
 
@@ -95,11 +104,13 @@ static void	push_pair_to_b(t_push_swap_stat *stat, int large_chunk,
 	{
 		rotate_a_n(stat, rot);
 		get_stack_top(stat->stack_a, &val);
-		i = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
+		total_size = get_stack_size(stat->stack_a)
+			+ get_stack_size(stat->stack_b);
 		op = OP_PB;
 		push_stack(stat->stack_a, stat->stack_b, &op);
 		store_op(stat->op_buffer, op);
-		if (!is_in_chunk(stat, get_rank(stat->sorted, i, val), large_chunk)
+		if (!is_in_chunk(stat,
+				get_rank(stat->sorted, total_size, val), large_chunk)
 			&& small_chunk != -1)
 		{
 			op = OP_RB;

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   merge_sort.h                                       :+:      :+:    :+:   */
+/*   ft_stack_internal_bonus.h                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/17 21:18:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/17 21:18:00 by slim             ###   ########.fr       */
+/*   Created: 2026/07/04 11:16:00 by slim              #+#    #+#             */
+/*   Updated: 2026/07/04 11:20:39 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MERGE_SORT_H
-# define MERGE_SORT_H
+#ifndef FT_STACK_INTERNAL_BONUS_H
+# define FT_STACK_INTERNAL_BONUS_H
 
-int	merge_sort(int *arr, int size);
+# include "ft_stack_internal.h"
 
 #endif

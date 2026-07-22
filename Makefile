@@ -3,14 +3,17 @@ NAME_BONUS  = checker
 
 CFLAGS      = -Wall -Werror -Wextra
 DEPFLAGS    = -MMD -MP
-INCFLAGS    = -I./include -I./ft_stack/include -I./src/bonus/ft_stack/include -I./libft/include
+INCFLAGS    = -I./include -I./src/ft_stack/include -I./src/bonus/ft_stack/include -I./libft/include
 
 SRC_DIR     = ./src
 OUT_DIR     = ./out
 INC_DIR     = ./include
 
-SRC_FILES   = main.c push_swap.c push_swap_stat.c check_duplicate.c \
-              compute_disorder.c merge_sort.c print_bench.c \
+SRC_FILES   = main.c push_swap.c str_to_int.c push_swap_stat.c \
+              check_duplicate.c compute_disorder.c merge_sort.c print_bench.c \
+              ft_stack/stack_basic.c ft_stack/stack_getter.c \
+              ft_stack/stack_push.c ft_stack/stack_rotate.c \
+              ft_stack/stack_rrotate.c ft_stack/stack_swap.c \
               sort/complex/complex_sort_small.c sort/complex/complex_sort_util.c \
               sort/complex/complex_sort.c sort/three_sort.c \
               sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
@@ -20,8 +23,14 @@ SRC_FILES   = main.c push_swap.c push_swap_stat.c check_duplicate.c \
               op_buffer/op_buffer.c
 
 SRC_BONUS   = bonus/checker_bonus.c bonus/checker_util_bonus.c \
-              push_swap.c push_swap_stat.c check_duplicate.c \
-              compute_disorder.c merge_sort.c print_bench.c \
+              push_swap.c str_to_int.c push_swap_stat.c \
+              check_duplicate.c compute_disorder.c merge_sort.c print_bench.c \
+              bonus/ft_stack/stack_basic_bonus.c \
+              bonus/ft_stack/stack_getter_bonus.c \
+              bonus/ft_stack/stack_push_bonus.c \
+              bonus/ft_stack/stack_rotate_bonus.c \
+              bonus/ft_stack/stack_rrotate_bonus.c \
+              bonus/ft_stack/stack_swap_bonus.c \
               sort/complex/complex_sort_small.c sort/complex/complex_sort_util.c \
               sort/complex/complex_sort.c sort/three_sort.c \
               sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
@@ -39,31 +48,21 @@ DEPS_BONUS  = $(OBJ_BONUS:.o=.d)
 
 LIBFT             = ./libft
 LIBFT_A           = ./libft/libft.a
-FT_STACK          = ./ft_stack
-FT_STACK_A        = ./ft_stack/ft_stack.a
-FT_STACK_BONUS    = ./src/bonus/ft_stack
-FT_STACK_BONUS_A  = ./src/bonus/ft_stack/ft_stack_bonus.a
 
 RM          = rm -rf
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIBFT_A) $(FT_STACK_A)
-	cc $(CFLAGS) $(OBJ) $(FT_STACK_A) $(LIBFT_A) $(INCFLAGS) -o $(NAME)
+$(NAME): $(OBJ) $(LIBFT_A)
+	cc $(CFLAGS) $(OBJ) $(LIBFT_A) $(INCFLAGS) -o $(NAME)
 
 bonus: $(NAME_BONUS)
 
-$(NAME_BONUS): $(OBJ_BONUS) $(LIBFT_A) $(FT_STACK_BONUS_A)
-	cc $(CFLAGS) $(OBJ_BONUS) $(FT_STACK_BONUS_A) $(LIBFT_A) $(INCFLAGS) -o $(NAME_BONUS)
+$(NAME_BONUS): $(OBJ_BONUS) $(LIBFT_A)
+	cc $(CFLAGS) $(OBJ_BONUS) $(LIBFT_A) $(INCFLAGS) -o $(NAME_BONUS)
 
 $(LIBFT_A): FORCE
 	make -C $(LIBFT)
-
-$(FT_STACK_A): FORCE
-	make -C $(FT_STACK)
-
-$(FT_STACK_BONUS_A): FORCE
-	make -C $(FT_STACK_BONUS)
 
 $(OUT_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
@@ -72,14 +71,10 @@ $(OUT_DIR)/%.o: $(SRC_DIR)/%.c
 clean:
 	$(RM) $(OBJ) $(DEPS) $(OBJ_BONUS) $(DEPS_BONUS)
 	make -C $(LIBFT) clean
-	make -C $(FT_STACK) clean
-	make -C $(FT_STACK_BONUS) clean
 
 fclean: clean
 	$(RM) $(NAME) $(NAME_BONUS)
 	make -C $(LIBFT) fclean
-	make -C $(FT_STACK) fclean
-	make -C $(FT_STACK_BONUS) fclean
 
 re: fclean all
 

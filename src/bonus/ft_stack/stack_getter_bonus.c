@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_stack.h"
+#include "ft_stack_bonus.h"
 
 int	get_stack_top(t_stack *s, int *res);
 int	get_stack_size(t_stack *s);

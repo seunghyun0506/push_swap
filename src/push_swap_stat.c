@@ -23,6 +23,8 @@ void	init_push_swap_stat(t_push_swap_stat *stat, int argc, char **argv)
 	stat->stack_a = 0;
 	stat->stack_b = 0;
 	stat->sorted = 0;
+	stat->initial_disorder = 0.0;
+	stat->selected_strategy = 0;
 	stat->op_buffer = init_op_buffer();
 }
 

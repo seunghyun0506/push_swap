@@ -14,6 +14,7 @@
 # define PUSH_SWAP_H
 # include "push_swap_stat.h"
 
+int		str_to_int(const char *str, const char **pos, int *err);
 int		parse_flag(t_push_swap_stat *stat);
 int		parse_stack(t_push_swap_stat *stat);
 void	sort(t_push_swap_stat *stat);

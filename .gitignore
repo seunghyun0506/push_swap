@@ -2,8 +2,6 @@ compile_commands.json
 compile_flags.txt
 .cache
 push_swap
-ft_stack/out
-ft_stack/ft_stack.a
 libft/out
 libft/libft.a
 out

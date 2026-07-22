@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_stack.h"
-#include "ft_stack_internal.h"
+#include "ft_stack_bonus.h"
+#include "ft_stack_internal_bonus.h"
 
 int			swap_stack(t_stack *s, t_op *op);
 int			swap_stacks(t_stack *s1, t_stack *s2, t_op *op);

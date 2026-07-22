@@ -23,16 +23,6 @@ typedef struct s_pair
 	int	cur_j;
 }	t_pair;
 
-typedef struct s_match
-{
-	int	first;
-	int	last;
-	int	cur;
-	int	i;
-	int	size;
-	int	n;
-}	t_match;
-
 typedef struct s_lis
 {
 	int	*tails;
@@ -48,10 +38,8 @@ typedef struct s_part
 
 int		complex_sort(t_push_swap_stat *stat);
 int		medium_sort(t_push_swap_stat *stat);
-void	divide_by_chunks(t_push_swap_stat *stat, int chunk_size,
-			int total_chunks);
-void	return_to_a_by_chunk(t_push_swap_stat *stat, int chunk_size,
-			int total_chunks);
+void	divide_by_chunks(t_push_swap_stat *stat);
+void	return_to_a_by_chunk(t_push_swap_stat *stat);
 int		get_insert_pos_a(t_stack *a, int val);
 void	align_stack_a(t_push_swap_stat *stat);
 int		small_sort(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,

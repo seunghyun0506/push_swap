@@ -62,15 +62,18 @@ static void	merge_sort_helper(int *arr, int *tmp, int left, int right)
 	}
 }
 
-void	merge_sort(int *arr, int size)
+int	merge_sort(int *arr, int size)
 {
 	int	*tmp;
 
 	if (size <= 1)
-		return ;
+		return (1);
+	if (!arr)
+		return (0);
 	tmp = (int *)malloc(sizeof(int) * size);
 	if (!tmp)
-		return ;
+		return (0);
 	merge_sort_helper(arr, tmp, 0, size - 1);
 	free(tmp);
+	return (1);
 }
