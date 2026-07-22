@@ -22,6 +22,7 @@ typedef struct s_push_swap_stat
 	int			i;
 	int			option;
 	int			bench;
+	int			element_cnt;
 	char		**argv;
 	t_stack		*stack_a;
 	t_stack		*stack_b;

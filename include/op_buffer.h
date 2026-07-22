@@ -20,6 +20,7 @@ typedef struct s_op_buffer
 	t_op	*arr;
 	int		idx;
 	int		capacity;
+	int		err;
 }	t_op_buffer;
 
 t_op_buffer	*init_op_buffer(void);

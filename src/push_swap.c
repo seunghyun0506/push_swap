@@ -66,6 +66,7 @@ int	parse_stack(t_push_swap_stat *stat)
 		cnt += tmp;
 		stat->i++;
 	}
+	stat->element_cnt = cnt;
 	stat->stack_a = init_stack(cnt);
 	stat->stack_b = init_stack(cnt);
 	stat->sorted = (int *)malloc(sizeof(int) * cnt);

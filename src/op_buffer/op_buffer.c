@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+static int	resize(t_op_buffer *buffer);
+
 t_op_buffer	*init_op_buffer(void)
 {
 	t_op_buffer	*buffer;
@@ -29,15 +31,8 @@ t_op_buffer	*init_op_buffer(void)
 	}
 	buffer->idx = 0;
 	buffer->capacity = 32;
+	buffer->err = 0;
 	return (buffer);
-}
-
-void	free_op_buffer(t_op_buffer *buffer)
-{
-	if (!buffer)
-		return ;
-	free(buffer->arr);
-	free(buffer);
 }
 
 static int	get_action_type(t_op top, t_op cur, t_op *merged)
@@ -67,7 +62,34 @@ static int	get_action_type(t_op top, t_op cur, t_op *merged)
 	return (0);
 }
 
-static int	resize_op_buffer(t_op_buffer *buffer)
+void	store_op(t_op_buffer *buffer, t_op op)
+{
+	t_op	merged;
+	int		act;
+
+	if (!buffer || buffer->err || op == OP_NONE)
+		return ;
+	while (buffer->idx > 0)
+	{
+		act = get_action_type(buffer->arr[buffer->idx - 1], op, &merged);
+		if (act == 0)
+			break ;
+		buffer->idx--;
+		if (act == 1)
+		{
+			op = OP_NONE;
+			break ;
+		}
+		op = merged;
+	}
+	if (op == OP_NONE)
+		return ;
+	if (buffer->idx >= buffer->capacity && !resize(buffer))
+		return ((void)(buffer->err = 1));
+	buffer->arr[buffer->idx++] = op;
+}
+
+static int	resize(t_op_buffer *buffer)
 {
 	t_op	*new_arr;
 	int		i;
@@ -87,27 +109,10 @@ static int	resize_op_buffer(t_op_buffer *buffer)
 	return (1);
 }
 
-void	store_op(t_op_buffer *buffer, t_op op)
+void	free_op_buffer(t_op_buffer *buffer)
 {
-	t_op	merged;
-	int		act;
-
-	if (!buffer || op == OP_NONE)
+	if (!buffer)
 		return ;
-	while (buffer->idx > 0)
-	{
-		act = get_action_type(buffer->arr[buffer->idx - 1], op, &merged);
-		if (act == 0)
-			break ;
-		buffer->idx--;
-		if (act == 1)
-		{
-			op = OP_NONE;
-			break ;
-		}
-		op = merged;
-	}
-	if (op != OP_NONE && (buffer->idx < buffer->capacity
-			|| resize_op_buffer(buffer)))
-		buffer->arr[buffer->idx++] = op;
+	free(buffer->arr);
+	free(buffer);
 }

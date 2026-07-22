@@ -13,6 +13,11 @@
 #include "push_swap_sort.h"
 #include "ft_stack_internal.h"
 
+void		divide_by_chunks(t_push_swap_stat *stat);
+void		selection_sort_to_b(t_push_swap_stat *stat);
+int			get_num_chunks(int n);
+int			is_in_chunk(t_push_swap_stat *stat, int val, int chunk_idx);
+void		rotate_n(t_push_swap_stat *stat, t_stack *s, int rot);
 static int	find_best_rot(t_push_swap_stat *stat, int c1, int c2, int *rot);
 static void	push_pair_to_b(t_push_swap_stat *stat, int c1, int c2);
 
@@ -21,10 +26,14 @@ int	medium_sort(t_push_swap_stat *stat)
 	int	n;
 
 	n = get_stack_size(stat->stack_a);
-	if (n <= 3)
-		return (small_sort(stat, stat->stack_a, stat->stack_b, n));
+	if (n <= 1)
+		return (1);
 	divide_by_chunks(stat);
-	return_to_a_by_chunk(stat);
+	if (stat->op_buffer->err)
+		return (0);
+	selection_sort_to_b(stat);
+	if (stat->op_buffer->err)
+		return (0);
 	return (1);
 }
 
@@ -34,45 +43,17 @@ void	divide_by_chunks(t_push_swap_stat *stat)
 	int	left_chunk;
 	int	right_chunk;
 
-	num_chunks = get_num_chunks(get_stack_size(stat->stack_a));
+	num_chunks = get_num_chunks(stat->element_cnt);
 	left_chunk = num_chunks / 2 - 1;
 	right_chunk = left_chunk + 1;
-	while (left_chunk >= 0)
+	while (left_chunk >= 0 && !stat->op_buffer->err)
 	{
 		push_pair_to_b(stat, left_chunk, right_chunk);
 		left_chunk--;
 		right_chunk++;
 	}
-	if (right_chunk < num_chunks)
+	if (right_chunk < num_chunks && !stat->op_buffer->err)
 		push_pair_to_b(stat, right_chunk, -1);
-}
-
-void	return_to_a_by_chunk(t_push_swap_stat *stat)
-{
-	int		target;
-	int		idx;
-	int		sz;
-	t_op	op;
-
-	small_sort(stat, stat->stack_a, stat->stack_b,
-		get_stack_size(stat->stack_a));
-	target = get_num_chunks(stat->stack_a->capacity) - 1;
-	while (target >= 0)
-	{
-		idx = find_max_chunk_idx(stat, target);
-		while (idx != -1)
-		{
-			sz = get_stack_size(stat->stack_b);
-			if (idx > sz / 2)
-				idx -= sz;
-			rotate_n(stat, stat->stack_b, idx);
-			op = OP_PA;
-			push_stack(stat->stack_b, stat->stack_a, &op);
-			store_op(stat->op_buffer, op);
-			idx = find_max_chunk_idx(stat, target);
-		}
-		target--;
-	}
 }
 
 static void	push_pair_to_b(t_push_swap_stat *stat, int c1, int c2)
@@ -81,7 +62,7 @@ static void	push_pair_to_b(t_push_swap_stat *stat, int c1, int c2)
 	int		val;
 	t_op	op;
 
-	while (find_best_rot(stat, c1, c2, &rot))
+	while (!stat->op_buffer->err && find_best_rot(stat, c1, c2, &rot))
 	{
 		rotate_n(stat, stat->stack_a, rot);
 		get_stack_top(stat->stack_a, &val);

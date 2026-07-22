@@ -32,7 +32,7 @@ int	main(int argc, char **argv)
 		return (0);
 	init_push_swap_stat(&stat, argc, argv);
 	if (!stat.op_buffer || !parse_stack(&stat)
-		|| !merge_sort(stat.sorted, get_stack_size(stat.stack_a)))
+		|| !merge_sort(stat.sorted, stat.element_cnt))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	if (!check_duplicate(&stat))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);

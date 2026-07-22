@@ -18,10 +18,3 @@ int	ft_toupper(int c)
 		return (c - 'a' + 'A');
 	return (c);
 }
-
-typedef struct
-{
-	int data;
-	int data2;
-	double data3;
-} example;

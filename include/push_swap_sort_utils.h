@@ -1,29 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   align.c                                            :+:      :+:    :+:   */
+/*   push_swap_sort_utils.h                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/19 12:42:00 by slim              #+#    #+#             */
+/*   Created: 2026/07/23 03:00:00 by slim              #+#    #+#             */
 /*   Updated: 2026/07/23 03:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap_sort.h"
+#ifndef PUSH_SWAP_SORT_UTILS_H
+# define PUSH_SWAP_SORT_UTILS_H
 
-void	align_stack_a(t_push_swap_stat *stat);
+# include "ft_stack.h"
+# include "push_swap_stat.h"
 
-void	align_stack_a(t_push_swap_stat *stat)
-{
-	int	size;
-	int	min_idx;
+int		find_min_idx_stack(t_stack *s);
+int		find_max_idx_stack(t_stack *s);
+void	rotate_n(t_push_swap_stat *stat, t_stack *s, int rot);
+int		binary_search(int *sorted, int n, int val);
+int		get_insert_pos_a(t_stack *a, int val);
 
-	size = get_stack_size(stat->stack_a);
-	if (size <= 1)
-		return ;
-	min_idx = find_min_idx_stack(stat->stack_a);
-	if (min_idx > size / 2)
-		min_idx -= size;
-	rotate_n(stat, stat->stack_a, min_idx);
-}
+#endif

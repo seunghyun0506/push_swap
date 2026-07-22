@@ -33,11 +33,13 @@ int	main(int argc, char **argv)
 	if (stat.i >= stat.argc)
 		return (free_resources(&stat), 0);
 	if (!parse_stack(&stat)
-		|| !merge_sort(stat.sorted, get_stack_size(stat.stack_a)))
+		|| !merge_sort(stat.sorted, stat.element_cnt))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	if (!check_duplicate(&stat))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	sort(&stat);
+	if (stat.op_buffer->err)
+		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	print_op_buffer(stat.op_buffer);
 	if (stat.bench)
 		print_bench_info(&stat);

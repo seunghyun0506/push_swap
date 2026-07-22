@@ -15,7 +15,7 @@
 
 void		gnl_resize(t_gnl_str *str);
 int			gnl_add_str(t_gnl_str *res, t_gnl_buf *buf);
-t_gnl_node	**gnl_add_node(t_gnl_node	**head, int fd);
+t_gnl_node	**gnl_add_node(t_gnl_node **head, int fd);
 void		gnl_del_node(t_gnl_node	**node);
 t_gnl_node	**gnl_search_node(t_gnl_node **head, int fd);
 
@@ -70,7 +70,7 @@ int	gnl_add_str(t_gnl_str *res, t_gnl_buf *buf)
 		|| (buf->capacity < BUFFER_SIZE && buf->idx >= buf->capacity));
 }
 
-t_gnl_node	**gnl_add_node(t_gnl_node	**head, int fd)
+t_gnl_node	**gnl_add_node(t_gnl_node **head, int fd)
 {
 	t_gnl_node	*node;
 

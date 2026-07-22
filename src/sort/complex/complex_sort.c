@@ -102,7 +102,7 @@ void	find_pivot(t_push_swap_stat *stat, t_stack *s,
 	i = 0;
 	while (i < size)
 	{
-		rank = get_rank(stat->sorted, n, s->datas[cur]);
+		rank = binary_search(stat->sorted, n, s->datas[cur]);
 		if (rank < range[0])
 			range[0] = rank;
 		if (rank > range[1])

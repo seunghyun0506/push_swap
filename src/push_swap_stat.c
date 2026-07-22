@@ -18,6 +18,7 @@ void	init_push_swap_stat(t_push_swap_stat *stat, int argc, char **argv)
 	stat->i = 1;
 	stat->option = 0;
 	stat->bench = 0;
+	stat->element_cnt = 0;
 	stat->argc = argc;
 	stat->argv = argv;
 	stat->stack_a = 0;
