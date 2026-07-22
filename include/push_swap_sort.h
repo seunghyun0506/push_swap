@@ -51,7 +51,9 @@ void	three_sort_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2);
 
 int		get_rank(int *sorted, int n, int val);
 int		get_num_chunks(int n);
-int		is_in_chunk(t_push_swap_stat *stat, int rank, int chunk_idx);
+int		is_in_chunk(t_push_swap_stat *stat, int val, int chunk_idx);
+void	rotate_n(t_push_swap_stat *stat, t_stack *s, int rot);
+int		find_max_chunk_idx(t_push_swap_stat *stat, int chunk_idx);
 
 int		simple_sort(t_push_swap_stat *stat);
 void	align_a(t_push_swap_stat *stat);

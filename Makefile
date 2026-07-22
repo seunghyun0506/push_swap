@@ -16,8 +16,7 @@ SRC_FILES   = main.c push_swap.c str_to_int.c push_swap_stat.c \
               ft_stack/stack_rrotate.c ft_stack/stack_swap.c \
               sort/complex/complex_sort_small.c sort/complex/complex_sort_util.c \
               sort/complex/complex_sort.c sort/three_sort.c \
-              sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
-              sort/medium/medium_sort_return.c \
+              sort/medium/medium_sort.c sort/medium/medium_sort_utils.c \
               sort/simple/simple_sort.c sort/simple/align.c \
               sort/simple/simple_sort_cost.c \
               op_buffer/op_buffer.c
@@ -33,8 +32,7 @@ SRC_BONUS   = bonus/checker_bonus.c bonus/checker_util_bonus.c \
               bonus/ft_stack/stack_swap_bonus.c \
               sort/complex/complex_sort_small.c sort/complex/complex_sort_util.c \
               sort/complex/complex_sort.c sort/three_sort.c \
-              sort/medium/medium_sort.c sort/medium/medium_sort_divide.c \
-              sort/medium/medium_sort_return.c \
+              sort/medium/medium_sort.c sort/medium/medium_sort_utils.c \
               sort/simple/simple_sort.c sort/simple/align.c \
               sort/simple/simple_sort_cost.c \
               op_buffer/op_buffer.c
