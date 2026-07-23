@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/22 12:30:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/23 05:30:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 09:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ int	is_in_chunk(t_push_swap_stat *stat, int val, int chunk_idx)
 		&& rank < (chunk_idx + 1) * chunk_size);
 }
 
-int	get_chunk_cnt(t_push_swap_stat *stat, int chunk_idx, int c_sz)
+int	get_chunk_cnt(t_push_swap_stat *stat, int chunk_idx, int chunk_size)
 {
 	int	num_chunks;
 
 	if (chunk_idx < 0)
 		return (0);
-	num_chunks = (stat->element_cnt + c_sz - 1) / c_sz;
+	num_chunks = (stat->element_cnt + chunk_size - 1) / chunk_size;
 	if (chunk_idx == num_chunks - 1)
-		return (stat->element_cnt - chunk_idx * c_sz);
-	return (c_sz);
+		return (stat->element_cnt - chunk_idx * chunk_size);
+	return (chunk_size);
 }
