@@ -26,7 +26,7 @@ int	medium_sort(t_push_swap_stat *stat)
 {
 	int	n;
 
-	n = get_stack_size(stat->stack_a);
+	n =stat->element_cnt;
 	if (n <= 1)
 		return (1);
 	divide_by_chunks(stat);
