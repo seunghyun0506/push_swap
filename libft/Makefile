@@ -2,7 +2,7 @@ NAME		= libft.a
 
 CFLAGS	  = -Wall -Wextra -Werror -MMD -MP -I $(INCS_DIR)
 AR		  = ar crs
-RM		  = rm -f
+RM		  = rm -rf
 
 SRCS_DIR	= ./src
 OUT_DIR	= ./out
@@ -34,7 +34,7 @@ $(OUT_DIR)/%.o: $(SRCS_DIR)/%.c
 	cc $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OUT_DIR)
 
 fclean: clean
 	$(RM) $(NAME)

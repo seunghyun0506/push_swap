@@ -67,14 +67,15 @@ void	selection_sort_to_b(t_push_swap_stat *stat)
 	int	idx;
 	int	size;
 
-	while (get_stack_size(stat->stack_b) > 0 && !stat->op_buffer->err)
+	size = get_stack_size(stat->stack_b);
+	while (size > 0 && !stat->op_buffer->err)
 	{
 		idx = find_max_idx_stack(stat->stack_b);
-		size = get_stack_size(stat->stack_b);
 		if (idx > size / 2)
 			idx -= size;
 		rotate_n(stat, stat->stack_b, idx);
 		op_push(stat, stat->stack_b, stat->stack_a);
+		size--;
 	}
 }
 
