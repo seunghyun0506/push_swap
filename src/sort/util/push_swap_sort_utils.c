@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 03:00:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/23 03:00:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 10:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,29 +69,19 @@ int	find_max_idx_stack(t_stack *s)
 	return (max_idx);
 }
 
-void	rotate_n(t_push_swap_stat *stat, t_stack *s, int rot)
+void	rotate_n(t_push_swap_stat *stat, t_stack *s, int rotation)
 {
-	t_op	op;
-
 	if (!stat || !stat->op_buffer || stat->op_buffer->err)
 		return ;
-	while (rot > 0 && !stat->op_buffer->err)
+	while (rotation > 0 && !stat->op_buffer->err)
 	{
-		op = OP_RA;
-		if (s == stat->stack_b)
-			op = OP_RB;
-		rotate_stack(s, &op);
-		store_op(stat->op_buffer, op);
-		rot--;
+		op_rotate(stat, s);
+		rotation--;
 	}
-	while (rot < 0 && !stat->op_buffer->err)
+	while (rotation < 0 && !stat->op_buffer->err)
 	{
-		op = OP_RRA;
-		if (s == stat->stack_b)
-			op = OP_RRB;
-		rrotate_stack(s, &op);
-		store_op(stat->op_buffer, op);
-		rot++;
+		op_rrotate(stat, s);
+		rotation++;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/19 12:44:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/21 07:27:48 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 10:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	insert_to_a(t_push_swap_stat *stat);
 
 int	simple_sort(t_push_swap_stat *stat)
 {
-	int		n;
+	int	n;
 
 	n = get_stack_size(stat->stack_a);
 	if (n <= 1)
@@ -36,21 +36,14 @@ int	simple_sort(t_push_swap_stat *stat)
 
 static void	move_to_b(t_push_swap_stat *stat)
 {
-	t_op	op;
-
 	while (get_stack_size(stat->stack_a) > 1 && !stat->op_buffer->err)
-	{
-		op = OP_PB;
-		push_stack(stat->stack_a, stat->stack_b, &op);
-		store_op(stat->op_buffer, op);
-	}
+		op_push(stat, stat->stack_a, stat->stack_b);
 }
 
 static void	insert_to_a(t_push_swap_stat *stat)
 {
-	int		pos_a;
-	int		size_a;
-	t_op	op;
+	int	pos_a;
+	int	size_a;
 
 	while (get_stack_size(stat->stack_b) > 0 && !stat->op_buffer->err)
 	{
@@ -60,8 +53,6 @@ static void	insert_to_a(t_push_swap_stat *stat)
 		if (pos_a > size_a / 2)
 			pos_a -= size_a;
 		rotate_n(stat, stat->stack_a, pos_a);
-		op = OP_PA;
-		push_stack(stat->stack_b, stat->stack_a, &op);
-		store_op(stat->op_buffer, op);
+		op_push(stat, stat->stack_b, stat->stack_a);
 	}
 }

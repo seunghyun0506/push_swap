@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 16:02:29 by slim              #+#    #+#             */
-/*   Updated: 2026/07/21 06:34:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 10:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,46 +14,27 @@
 #include "ft_stack_internal.h"
 #include "push_swap_sort.h"
 
-static void	op_push(t_push_swap_stat *stat, t_stack *from, t_stack *to,
-				t_op op_type)
-{
-	t_op	op;
-
-	op = op_type;
-	push_stack(from, to, &op);
-	store_op(stat->op_buffer, op);
-}
-
-static void	op_swap(t_push_swap_stat *stat, t_stack *s, t_op op_type)
-{
-	t_op	op;
-
-	op = op_type;
-	swap_stack(s, &op);
-	store_op(stat->op_buffer, op);
-}
-
 static void	three_sort_asc_cases(t_push_swap_stat *stat, t_stack *s1,
 				t_stack *s2, int case_id)
 {
 	if (case_id == 1 || case_id == 3)
 	{
-		op_push(stat, s1, s2, OP_PB);
-		op_swap(stat, s1, OP_SA);
-		op_push(stat, s2, s1, OP_PA);
+		op_push(stat, s1, s2);
+		op_swap(stat, s1);
+		op_push(stat, s2, s1);
 		if (case_id == 3)
-			op_swap(stat, s1, OP_SA);
+			op_swap(stat, s1);
 	}
 	else if (case_id == 2)
-		op_swap(stat, s1, OP_SA);
+		op_swap(stat, s1);
 	else
 	{
-		op_swap(stat, s1, OP_SA);
-		op_push(stat, s1, s2, OP_PB);
-		op_swap(stat, s1, OP_SA);
-		op_push(stat, s2, s1, OP_PA);
+		op_swap(stat, s1);
+		op_push(stat, s1, s2);
+		op_swap(stat, s1);
+		op_push(stat, s2, s1);
 		if (case_id == 5)
-			op_swap(stat, s1, OP_SA);
+			op_swap(stat, s1);
 	}
 }
 
@@ -93,8 +74,8 @@ void	three_sort_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2)
 	{
 		if (get_stack_size(s2) >= 2 && s2->datas[s2->top_index]
 			< s2->datas[prev_idx(s2, s2->top_index)])
-			op_swap(stat, s2, OP_SB);
-		op_push(stat, s2, s1, OP_PA);
+			op_swap(stat, s2);
+		op_push(stat, s2, s1);
 		i++;
 	}
 	three_sort_asc(stat, s1, s2);

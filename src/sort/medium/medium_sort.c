@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 23:59:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/23 09:00:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 10:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	divide_by_chunks(t_push_swap_stat *stat)
 	int	right_chunk;
 
 	chunk_size = (int)ft_sqrt((double)stat->element_cnt);
+	if (chunk_size == 0)
+		chunk_size = 1;
 	num_chunks = (stat->element_cnt + chunk_size - 1) / chunk_size;
 	left_chunk = num_chunks / 2 - 1;
 	right_chunk = left_chunk + 1;
@@ -59,12 +61,11 @@ void	divide_by_chunks(t_push_swap_stat *stat)
 	if (right_chunk < num_chunks && !stat->op_buffer->err)
 		push_pair_to_b(stat, right_chunk, -1, chunk_size);
 }
-//짧게 할려고 돌린다? 
+
 void	selection_sort_to_b(t_push_swap_stat *stat)
 {
-	int		idx;
-	int		size;
-	t_op	op;
+	int	idx;
+	int	size;
 
 	while (get_stack_size(stat->stack_b) > 0 && !stat->op_buffer->err)
 	{
@@ -73,44 +74,30 @@ void	selection_sort_to_b(t_push_swap_stat *stat)
 		if (idx > size / 2)
 			idx -= size;
 		rotate_n(stat, stat->stack_b, idx);
-		op = OP_PA;
-		push_stack(stat->stack_b, stat->stack_a, &op);
-		store_op(stat->op_buffer, op);
+		op_push(stat, stat->stack_b, stat->stack_a);
 	}
 }
 
 static void	push_pair_to_b(t_push_swap_stat *stat, int c1, int c2,
 				int chunk_size)
 {
-	int		target_b;
-	int		val;
-	t_op	op;
+	int	target_b;
+	int	val;
 
-	target_b = get_chunk_cnt(stat, c1, chunk_size)
+	target_b = get_stack_size(stat->stack_b)
+		+ get_chunk_cnt(stat, c1, chunk_size)
 		+ get_chunk_cnt(stat, c2, chunk_size);
-	while (!stat->op_buffer->err && target_b > 0)
+	while (!stat->op_buffer->err && get_stack_size(stat->stack_b) < target_b)
 	{
 		get_stack_top(stat->stack_a, &val);
 		if (is_in_chunk(stat, val, c1))
-		{
-			op = OP_PB;
-			push_stack(stat->stack_a, stat->stack_b, &op);
-			store_op(stat->op_buffer, op);
-		}
+			op_push(stat, stat->stack_a, stat->stack_b);
 		else if (c2 != -1 && is_in_chunk(stat, val, c2))
 		{
-			op = OP_PB;
-			push_stack(stat->stack_a, stat->stack_b, &op);
-			store_op(stat->op_buffer, op);
-			op = OP_RB;
-			rotate_stack(stat->stack_b, &op);
-			store_op(stat->op_buffer, op);
+			op_push(stat, stat->stack_a, stat->stack_b);
+			op_rotate(stat, stat->stack_b);
 		}
 		else
-		{
-			op = OP_RA;
-			rotate_stack(stat->stack_a, &op);
-			store_op(stat->op_buffer, op);
-		}
+			op_rotate(stat, stat->stack_a);
 	}
 }

@@ -27,7 +27,7 @@ void		partition_asc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 void		partition_desc(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 				t_part *part);
 void		rewind_stack(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
-				int *sizes);
+				t_pair sizes);
 
 int	complex_sort(t_push_swap_stat *stat)
 {
@@ -41,16 +41,16 @@ static int	complex_sort_helper_a(t_push_swap_stat *stat, t_stack *s1,
 {
 	int		arr[3];
 	t_part	part;
-	int		rewind_sizes[2];
+	t_pair	sizes;
 
 	if (size <= 3)
 		return (small_sort(stat, s1, s2, size));
 	part.size = size;
 	part.cnt = arr;
 	partition_asc(stat, s1, s2, &part);
-	rewind_sizes[0] = arr[0];
-	rewind_sizes[1] = arr[1];
-	rewind_stack(stat, s1, s2, rewind_sizes);
+	sizes.i = arr[0];
+	sizes.j = arr[1];
+	rewind_stack(stat, s1, s2, sizes);
 	complex_sort_helper_a(stat, s1, s2, arr[0]);
 	complex_sort_helper_b(stat, s1, s2, arr[1]);
 	complex_sort_helper_b(stat, s1, s2, arr[2] - arr[1]);
@@ -62,7 +62,7 @@ static int	complex_sort_helper_b(t_push_swap_stat *stat, t_stack *s1,
 {
 	int		arr[3];
 	t_part	part;
-	int		rewind_sizes[2];
+	t_pair	sizes;
 
 	if (size <= 3)
 		return (small_sort_helper(stat, s1, s2, size));
@@ -70,9 +70,9 @@ static int	complex_sort_helper_b(t_push_swap_stat *stat, t_stack *s1,
 	part.cnt = arr;
 	partition_desc(stat, s1, s2, &part);
 	complex_sort_helper_a(stat, s1, s2, arr[0] - arr[1]);
-	rewind_sizes[0] = arr[1];
-	rewind_sizes[1] = arr[2];
-	rewind_stack(stat, s1, s2, rewind_sizes);
+	sizes.i = arr[1];
+	sizes.j = arr[2];
+	rewind_stack(stat, s1, s2, sizes);
 	complex_sort_helper_a(stat, s1, s2, arr[1]);
 	complex_sort_helper_b(stat, s1, s2, arr[2]);
 	return (1);
@@ -81,27 +81,28 @@ static int	complex_sort_helper_b(t_push_swap_stat *stat, t_stack *s1,
 void	find_pivot(t_push_swap_stat *stat, t_stack *s,
 			int size, int *pivots)
 {
-	int	n;
-	int	range[2];
 	int	cur;
 	int	i;
-	int	rank;
+	int	min_val;
+	int	max_val;
+	int	ranks[2];
 
-	n = get_stack_size(stat->stack_a) + get_stack_size(stat->stack_b);
+	if (size <= 0)
+		return ;
 	cur = s->top_index;
-	range[0] = n;
-	range[1] = -1;
-	i = 0;
-	while (i < size)
+	min_val = s->datas[cur];
+	max_val = min_val;
+	i = -1;
+	while (++i < size)
 	{
-		rank = binary_search(stat->sorted, n, s->datas[cur]);
-		if (rank < range[0])
-			range[0] = rank;
-		if (rank > range[1])
-			range[1] = rank;
+		if (s->datas[cur] < min_val)
+			min_val = s->datas[cur];
+		if (s->datas[cur] > max_val)
+			max_val = s->datas[cur];
 		cur = prev_idx(s, cur);
-		i++;
 	}
-	pivots[0] = stat->sorted[range[0] + (range[1] - range[0]) / 3];
-	pivots[1] = stat->sorted[range[0] + (range[1] - range[0]) * 2 / 3];
+	ranks[0] = binary_search(stat->sorted, stat->element_cnt, min_val);
+	ranks[1] = binary_search(stat->sorted, stat->element_cnt, max_val);
+	pivots[0] = stat->sorted[ranks[0] + (ranks[1] - ranks[0]) / 3];
+	pivots[1] = stat->sorted[ranks[0] + (ranks[1] - ranks[0]) * 2 / 3];
 }
