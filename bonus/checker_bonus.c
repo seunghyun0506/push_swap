@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 06:55:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/23 10:30:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 19:15:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ int	main(int argc, char **argv)
 	if (argc <= 1)
 		return (0);
 	init_push_swap_stat(&stat, argc, argv);
-	if (!stat.op_buffer || !parse_stack(&stat)
-		|| !merge_sort(stat.sorted, stat.element_cnt))
+	if (!parse_stack(&stat))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);
 	if (!check_duplicate(&stat))
 		return (free_resources(&stat), write(2, "Error\n", 6), 1);

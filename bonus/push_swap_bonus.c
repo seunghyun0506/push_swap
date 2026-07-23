@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 11:00:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/23 11:00:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 19:15:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ int	parse_stack(t_push_swap_stat *stat)
 	stat->element_cnt = cnt;
 	stat->stack_a = init_stack(cnt);
 	stat->stack_b = init_stack(cnt);
-	stat->sorted = (int *)malloc(sizeof(int) * cnt);
-	if (!stat->stack_a || !stat->stack_b || !stat->sorted)
+	if (!stat->stack_a || !stat->stack_b)
 	{
 		ft_lstclear(&list, free);
 		return (0);
@@ -97,13 +96,10 @@ static int	parse_integers(t_list **lst, const char *str)
 static void	list_to_stack(t_push_swap_stat *stat, t_list **lst, int node_cnt)
 {
 	t_list	*list_tmp;
-	int		i;
 
-	i = node_cnt - 1;
 	while (node_cnt--)
 	{
 		push_stack_data(stat->stack_a, *((int *)(*lst)->content));
-		stat->sorted[i--] = *((int *)(*lst)->content);
 		list_tmp = *lst;
 		*lst = (*lst)->next;
 		ft_lstdelone(list_tmp, free);

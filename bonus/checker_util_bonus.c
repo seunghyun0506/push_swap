@@ -18,16 +18,12 @@ void	free_resources(t_push_swap_stat *stat)
 {
 	if (!stat)
 		return ;
-	free_op_buffer(stat->op_buffer);
-	stat->op_buffer = NULL;
 	if (stat->stack_a)
 		destroy_stack(stat->stack_a);
 	stat->stack_a = NULL;
 	if (stat->stack_b)
 		destroy_stack(stat->stack_b);
 	stat->stack_b = NULL;
-	free(stat->sorted);
-	stat->sorted = NULL;
 }
 
 int	is_sorted(t_stack *s)
