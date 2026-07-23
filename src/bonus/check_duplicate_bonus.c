@@ -1,21 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_stack_internal_bonus.h                          :+:      :+:    :+:   */
+/*   check_duplicate_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/04 11:16:00 by slim              #+#    #+#             */
+/*   Created: 2026/07/23 11:00:00 by slim              #+#    #+#             */
 /*   Updated: 2026/07/23 11:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_STACK_INTERNAL_BONUS_H
-# define FT_STACK_INTERNAL_BONUS_H
+#include "ft_stack_bonus.h"
+#include "push_swap_bonus.h"
 
-# include "ft_stack_bonus.h"
+int	check_duplicate(t_push_swap_stat *stat)
+{
+	int	size;
+	int	i;
 
-int	next_idx(t_stack *s, int num);
-int	prev_idx(t_stack *s, int num);
-
-#endif
+	size = get_stack_size(stat->stack_a);
+	if (size <= 1)
+		return (1);
+	i = 0;
+	while (i < size - 1)
+	{
+		if (stat->sorted[i] == stat->sorted[i + 1])
+			return (0);
+		i++;
+	}
+	return (1);
+}

@@ -6,7 +6,7 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/17 08:35:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/20 15:45:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 10:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,26 @@ double	compute_disorder(t_stack *a)
 {
 	int		size;
 	int		mistakes;
-	t_pair	p;
+	t_pair	idx;
+	t_pair	cur;
 
 	size = get_stack_size(a);
 	if (size < 2)
 		return (0.0);
 	mistakes = 0;
-	p.cur_i = a->top_index;
-	p.i = 0;
-	while (p.i < size - 1)
+	cur.i = a->top_index;
+	idx.i = -1;
+	while (++idx.i < size - 1)
 	{
-		p.cur_j = prev_idx(a, p.cur_i);
-		p.j = p.i + 1;
-		while (p.j < size)
+		cur.j = prev_idx(a, cur.i);
+		idx.j = idx.i;
+		while (++idx.j < size)
 		{
-			if (a->datas[p.cur_i] > a->datas[p.cur_j])
+			if (a->datas[cur.i] > a->datas[cur.j])
 				mistakes++;
-			p.cur_j = prev_idx(a, p.cur_j);
-			p.j++;
+			cur.j = prev_idx(a, cur.j);
 		}
-		p.cur_i = prev_idx(a, p.cur_i);
-		p.i++;
+		cur.i = prev_idx(a, cur.i);
 	}
 	return ((double)mistakes / ((double)size * (size - 1) / 2.0));
 }

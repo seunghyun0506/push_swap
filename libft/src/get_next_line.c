@@ -14,17 +14,17 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-char		*get_next_line(int fd);
-t_gnl_node	**init(t_gnl_str *str, int fd,
-				t_gnl_node **head);
-void		destroy(t_gnl_str *str, t_gnl_node **curr, char *ret);
-char		*ft_strndup(char *arr, int size);
-int			fill_buffer(int fd, t_gnl_buf *buf);
-void		gnl_resize(t_gnl_str *str);
-int			gnl_add_str(t_gnl_str *res, t_gnl_buf *buf);
-t_gnl_node	**gnl_add_node(t_gnl_node **head, int fd);
-void		gnl_del_node(t_gnl_node	**node);
-t_gnl_node	**gnl_search_node(t_gnl_node **head, int fd);
+char				*get_next_line(int fd);
+static t_gnl_node	**init(t_gnl_str *str, int fd,
+						t_gnl_node **head);
+static void			destroy(t_gnl_str *str, t_gnl_node **curr, char *ret);
+char				*ft_strndup(char *arr, int size);
+int					fill_buffer(int fd, t_gnl_buf *buf);
+void				gnl_resize(t_gnl_str *str);
+int					gnl_add_str(t_gnl_str *res, t_gnl_buf *buf);
+t_gnl_node			**gnl_add_node(t_gnl_node **head, int fd);
+void				gnl_del_node(t_gnl_node	**node);
+t_gnl_node			**gnl_search_node(t_gnl_node **head, int fd);
 
 char	*get_next_line(int fd)
 {
@@ -78,16 +78,15 @@ t_gnl_node	**init(t_gnl_str *str, int fd,
 	return (curr);
 }
 
-void	destroy(t_gnl_str *str, t_gnl_node **curr, char *ret)
+static void	destroy(t_gnl_str *str, t_gnl_node **curr, char *ret)
 {
 	free(str->arr);
 	if ((*curr)->buf.idx >= (*curr)->buf.capacity || ret == NULL)
 	{
 		free((*curr)->buf.buffer);
 		(*curr)->buf.buffer = 0;
-	}
-	if ((*curr)->buf.capacity <= 0 || ret == NULL)
 		gnl_del_node(curr);
+	}
 }
 
 char	*ft_strndup(char *arr, int size)

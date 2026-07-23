@@ -6,19 +6,17 @@
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/21 06:55:00 by slim              #+#    #+#             */
-/*   Updated: 2026/07/21 07:03:00 by slim             ###   ########.fr       */
+/*   Updated: 2026/07/23 10:30:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap_stat.h"
-#include "push_swap.h"
-#include "merge_sort.h"
+#include "checker_bonus.h"
+#include "push_swap_bonus.h"
+#include "merge_sort_bonus.h"
 #include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>
 
-void		free_resources(t_push_swap_stat *stat);
-int			is_sorted(t_stack *s);
 static int	execute_instruction(t_push_swap_stat *stat, char *line);
 static int	run_instructions(t_push_swap_stat *stat);
 

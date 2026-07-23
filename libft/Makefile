@@ -23,7 +23,7 @@ SRC_FILES   = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
 
 SRCS		= $(addprefix $(SRCS_DIR)/, $(SRC_FILES))
 OBJS		= $(addprefix $(OUT_DIR)/, $(SRC_FILES:.c=.o))
-DEPS		= $(OBJ:.o=.d)
+DEPS		= $(OBJS:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJS)

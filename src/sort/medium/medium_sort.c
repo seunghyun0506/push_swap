@@ -59,7 +59,7 @@ void	divide_by_chunks(t_push_swap_stat *stat)
 		right_chunk++;
 	}
 	if (right_chunk < num_chunks && !stat->op_buffer->err)
-		push_pair_to_b(stat, right_chunk, -1, chunk_size);
+		push_pair_to_b(stat, -1, right_chunk, chunk_size);
 }
 
 void	selection_sort_to_b(t_push_swap_stat *stat)
@@ -84,18 +84,18 @@ static void	push_pair_to_b(t_push_swap_stat *stat, int c1, int c2,
 	int	target_b;
 	int	val;
 
-	target_b = get_stack_size(stat->stack_b)
-		+ get_chunk_cnt(stat, c1, chunk_size)
-		+ get_chunk_cnt(stat, c2, chunk_size);
-	while (!stat->op_buffer->err && get_stack_size(stat->stack_b) < target_b)
+	target_b = get_chunk_cnt(stat, c1, chunk_size)
+			+ get_chunk_cnt(stat, c2, chunk_size);
+	while (!stat->op_buffer->err && target_b > 0)
 	{
 		get_stack_top(stat->stack_a, &val);
-		if (is_in_chunk(stat, val, c1))
-			op_push(stat, stat->stack_a, stat->stack_b);
-		else if (c2 != -1 && is_in_chunk(stat, val, c2))
+		if (is_in_chunk(stat, val, c2))
+			(op_push(stat, stat->stack_a, stat->stack_b), target_b--);
+		else if (c1 >= 0 && is_in_chunk(stat, val, c1))
 		{
 			op_push(stat, stat->stack_a, stat->stack_b);
 			op_rotate(stat, stat->stack_b);
+			target_b--;
 		}
 		else
 			op_rotate(stat, stat->stack_a);

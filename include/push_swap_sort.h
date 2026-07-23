@@ -20,8 +20,6 @@ typedef struct s_pair
 {
 	int	i;
 	int	j;
-	int	cur_i;
-	int	cur_j;
 }	t_pair;
 
 typedef struct s_lis

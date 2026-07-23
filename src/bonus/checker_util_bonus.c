@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_stack_bonus.h"
+#include "checker_bonus.h"
 #include "ft_stack_internal_bonus.h"
-#include "push_swap_stat.h"
 #include <stdlib.h>
 
 void	free_resources(t_push_swap_stat *stat)

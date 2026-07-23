@@ -1,52 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.c                                        :+:      :+:    :+:   */
+/*   push_swap_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: slim <slim@student.42gyeongsan.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/09 13:52:08 by slim              #+#    #+#             */
-/*   Updated: 2026/07/23 10:30:00 by slim             ###   ########.fr       */
+/*   Created: 2026/07/23 11:00:00 by slim              #+#    #+#             */
+/*   Updated: 2026/07/23 11:00:00 by slim             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "push_swap.h"
+#include "push_swap_bonus.h"
 #include "libft.h"
-#include "push_swap_sort.h"
 #include <stdlib.h>
 
 int			parse_stack(t_push_swap_stat *stat);
-void		sort(t_push_swap_stat *stat);
 static int	add_node(t_list **lst, int num);
 static int	parse_integers(t_list **lst, const char *str);
 static void	list_to_stack(t_push_swap_stat *stat, t_list **lst, int node_cnt);
-
-void	sort(t_push_swap_stat *stat)
-{
-	int	n;
-
-	n = get_stack_size(stat->stack_a);
-	if (n <= 3)
-	{
-		small_sort(stat, stat->stack_a, stat->stack_b, n);
-		return ;
-	}
-	stat->initial_disorder = compute_disorder(stat->stack_a);
-	if (stat->option >= 1 && stat->option <= 3)
-		stat->selected_strategy = stat->option;
-	else if (stat->initial_disorder < 0.2)
-		stat->selected_strategy = 1;
-	else if (stat->initial_disorder < 0.5)
-		stat->selected_strategy = 2;
-	else
-		stat->selected_strategy = 3;
-	if (stat->initial_disorder != 0.0 && stat->selected_strategy == 1)
-		simple_sort(stat);
-	else if (stat->initial_disorder != 0.0 && stat->selected_strategy == 2)
-		medium_sort(stat);
-	else if (stat->initial_disorder != 0.0 && stat->selected_strategy == 3)
-		complex_sort(stat);
-}
 
 int	parse_stack(t_push_swap_stat *stat)
 {
