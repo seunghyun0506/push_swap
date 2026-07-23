@@ -32,7 +32,7 @@ void		rewind_stack(t_push_swap_stat *stat, t_stack *s1, t_stack *s2,
 int	complex_sort(t_push_swap_stat *stat)
 {
 	complex_sort_helper_a(stat, stat->stack_a, stat->stack_b,
-		get_stack_size(stat->stack_a));
+		stat->element_cnt);
 	return (1);
 }
 
@@ -78,14 +78,6 @@ static int	complex_sort_helper_b(t_push_swap_stat *stat, t_stack *s1,
 	return (1);
 }
 
-/*
-** find_pivot
-** : stat->sorted(파싱 시 1회만 정렬된 배열)를 활용하여
-**   현재 부분 스택 s의 원소들 중 1/3, 2/3 순위에 해당하는 피벗 값을 구합니다.
-**   기존에는 호출마다 malloc + merge_sort를 수행했지만,
-**   이제는 get_rank(O(log n)) 조회만으로 피벗을 선택합니다.
-**   pivots[0] = 1/3 피벗, pivots[1] = 2/3 피벗
-*/
 void	find_pivot(t_push_swap_stat *stat, t_stack *s,
 			int size, int *pivots)
 {

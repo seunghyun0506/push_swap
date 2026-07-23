@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_stack_bonus.h"
-#include "ft_stack_internal_bonus.h"
 #include "push_swap_stat.h"
 #include "push_swap.h"
 #include "merge_sort.h"
