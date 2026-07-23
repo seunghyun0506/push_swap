@@ -12,7 +12,6 @@
 
 #include "checker_bonus.h"
 #include "push_swap_bonus.h"
-#include "merge_sort_bonus.h"
 #include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>

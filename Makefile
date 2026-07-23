@@ -4,9 +4,10 @@ NAME_BONUS  = checker
 CFLAGS      = -Wall -Werror -Wextra
 DEPFLAGS    = -MMD -MP
 INCFLAGS        = -I./include -I./src/ft_stack/include -I./libft/include
-INCFLAGS_BONUS  = -I./include -I./src/bonus/ft_stack/include -I./libft/include
+INCFLAGS_BONUS  = -I./bonus/include -I./libft/include
 
 SRC_DIR     = ./src
+BONUS_DIR   = ./bonus
 OUT_DIR     = ./out
 INC_DIR     = ./include
 
@@ -25,22 +26,23 @@ SRC_FILES   = main.c push_swap.c str_to_int.c push_swap_stat.c \
               sort/simple/simple_sort_cost.c \
               op_buffer/op_buffer.c
 
-SRC_BONUS   = bonus/checker_bonus.c bonus/checker_util_bonus.c \
-              bonus/push_swap_bonus.c bonus/str_to_int_bonus.c \
-              bonus/push_swap_stat_bonus.c bonus/check_duplicate_bonus.c \
-              bonus/merge_sort_bonus.c bonus/op_buffer_bonus.c \
-              bonus/ft_stack/stack_basic_bonus.c \
-              bonus/ft_stack/stack_getter_bonus.c \
-              bonus/ft_stack/stack_push_bonus.c \
-              bonus/ft_stack/stack_rotate_bonus.c \
-              bonus/ft_stack/stack_rrotate_bonus.c \
-              bonus/ft_stack/stack_swap_bonus.c
+BONUS_FILES = checker_bonus.c checker_util_bonus.c \
+              push_swap_bonus.c str_to_int_bonus.c \
+              push_swap_stat_bonus.c check_duplicate_bonus.c \
+              merge_sort_bonus.c op_buffer_bonus.c \
+              ft_stack/stack_basic_bonus.c \
+              ft_stack/stack_getter_bonus.c \
+              ft_stack/stack_push_bonus.c \
+              ft_stack/stack_rotate_bonus.c \
+              ft_stack/stack_rrotate_bonus.c \
+              ft_stack/stack_swap_bonus.c
 
 SRC         = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ         = $(addprefix $(OUT_DIR)/, $(SRC_FILES:.c=.o))
 DEPS        = $(OBJ:.o=.d)
 
-OBJ_BONUS   = $(addprefix $(OUT_DIR)/, $(SRC_BONUS:.c=.o))
+SRC_BONUS   = $(addprefix $(BONUS_DIR)/, $(BONUS_FILES))
+OBJ_BONUS   = $(addprefix $(OUT_DIR)/bonus/, $(BONUS_FILES:.c=.o))
 DEPS_BONUS  = $(OBJ_BONUS:.o=.d)
 
 LIBFT       = ./libft
@@ -61,7 +63,7 @@ $(NAME_BONUS): $(OBJ_BONUS) $(LIBFT_A)
 $(LIBFT_A):
 	make -C $(LIBFT)
 
-$(OUT_DIR)/bonus/%.o: $(SRC_DIR)/bonus/%.c
+$(OUT_DIR)/bonus/%.o: $(BONUS_DIR)/%.c
 	@mkdir -p $(dir $@)
 	cc $(CFLAGS) $(DEPFLAGS) $(INCFLAGS_BONUS) -c $< -o $@
 

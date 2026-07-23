@@ -85,7 +85,7 @@ static void	push_pair_to_b(t_push_swap_stat *stat, int c1, int c2,
 	int	val;
 
 	target_b = get_chunk_cnt(stat, c1, chunk_size)
-			+ get_chunk_cnt(stat, c2, chunk_size);
+		+ get_chunk_cnt(stat, c2, chunk_size);
 	while (!stat->op_buffer->err && target_b > 0)
 	{
 		get_stack_top(stat->stack_a, &val);

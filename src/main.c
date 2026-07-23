@@ -13,7 +13,6 @@
 #include "ft_stack.h"
 #include "push_swap_stat.h"
 #include "push_swap.h"
-#include "merge_sort.h"
 #include "libft.h"
 #include <unistd.h>
 #include <stdlib.h>

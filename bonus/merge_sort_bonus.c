@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "merge_sort_bonus.h"
+#include "push_swap_bonus.h"
 #include <stdlib.h>
 
 static void	copy_array(int *arr, int *tmp, int left, int right)

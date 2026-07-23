@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "push_swap.h"
 #include <stdlib.h>
 
 static void	copy_array(int *arr, int *tmp, int left, int right)
