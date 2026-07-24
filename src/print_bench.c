@@ -73,7 +73,7 @@ static void	print_strategy(t_push_swap_stat *stat)
 	if (stat->option == 1)
 		ft_putstr_fd("Simple / O(n2)\n", 2);
 	else if (stat->option == 2)
-		ft_putstr_fd("Medium / O(n\xe2\x88\x9an)\n", 2);
+		ft_putstr_fd("Medium / O(n sqrt n)\n", 2);
 	else if (stat->option == 3)
 		ft_putstr_fd("Complex / O(n log n)\n", 2);
 	else
@@ -82,7 +82,7 @@ static void	print_strategy(t_push_swap_stat *stat)
 		if (stat->selected_strategy == 1)
 			ft_putstr_fd("O(n2)\n", 2);
 		else if (stat->selected_strategy == 2)
-			ft_putstr_fd("O(n\xe2\x88\x9an)\n", 2);
+			ft_putstr_fd("O(n sqrt n)\n", 2);
 		else
 			ft_putstr_fd("O(n log n)\n", 2);
 	}
